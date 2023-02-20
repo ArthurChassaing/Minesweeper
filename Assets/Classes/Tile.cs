@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Tile : MonoBehaviour
+public class Tile
 {
     public bool IsBomb { get; private set; }
     public bool IsFlagged { get; private set; }
@@ -32,17 +30,19 @@ public class Tile : MonoBehaviour
         neighbors.Add(neighbor);
     }
 
-    public void Reveal()
+    /// <summary>
+    /// Reveal a tile and it's neighbours if it's empty.
+    /// </summary>
+    /// <returns>True if a bomb is revealed, false otherwise</returns>
+    public bool Reveal()
     {
         IsRevealed = true;
         if (IsBomb)
         {
-            // TODO: Game over
-            return;
+            return true;
         }
 
         // Reavel itself
-        // TODO: change sprite
         int bombCount = 0;
         foreach (Tile neighbor in neighbors)
         {
@@ -51,10 +51,11 @@ public class Tile : MonoBehaviour
                 bombCount++;
             }
         }
+        // TODO: change sprite
         // TODO: Write number of bombs around
 
-        // Reaveal all neighbors
-        if (bombCount != 0) return; // Can't reveal if there are bombs around
+        // Reveal all neighbors
+        if (bombCount != 0) return false; // Can't reveal if there are bombs around
         foreach (Tile neighbor in neighbors)
         {
             if (!neighbor.IsRevealed)
@@ -62,17 +63,6 @@ public class Tile : MonoBehaviour
                 neighbor.Reveal();
             }
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        return false;
     }
 }
