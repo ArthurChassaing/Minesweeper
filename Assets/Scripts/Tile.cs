@@ -28,11 +28,12 @@ public class Tile
         IsFlagged = false;
         IsRevealed = false;
         neighbors = new List<Tile>();
-        gameObject = GameObject.Instantiate(SquarePrefab, new Vector3(X, Y), Quaternion.identity);
+        gameObject = Object.Instantiate(SquarePrefab, new Vector3(X, Y), Quaternion.identity);
     }
 
     public void SetBomb()
     {
+        gameObject.GetComponent<SpriteRenderer>().sprite = MineSprite;
         IsMine = true;
     }
 
