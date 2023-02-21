@@ -45,7 +45,7 @@ public class Game : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                grid[x, y] = new Tile(false);
+                grid[x, y] = new Tile(x, y);
 
                 // Add neighbors
                 if (x > 0)
