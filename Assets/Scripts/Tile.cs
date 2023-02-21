@@ -28,7 +28,7 @@ public class Tile
         IsFlagged = false;
         IsRevealed = false;
         neighbors = new List<Tile>();
-        gameObject = GameObject.Instantiate(SquarePrefab, new Vector3(X, Y, 0), Quaternion.identity);
+        gameObject = GameObject.Instantiate(SquarePrefab, new Vector3(X, Y), Quaternion.identity);
     }
 
     public void SetBomb()

@@ -17,7 +17,7 @@ public class Game : MonoBehaviour
         isGridInitialized = false;
 
         // /!\ REMOVE THE FOLLOWING LINES WHEN MENU IMPLEMENTED
-        InitGrid(10, 10, 10);
+        InitGrid(15, 5, 10);
         PlaceMines(1, 1);
     }
 
@@ -76,6 +76,12 @@ public class Game : MonoBehaviour
                 }
             }
         }
+
+        // Place the camera to show the entire grid
+        transform.position = new Vector3(width * 0.5f - 0.5f, height * 0.5f - 0.5f, -1);
+        Camera mainCam = GetComponent<Camera>();
+        mainCam.orthographicSize = Math.Max(height * 0.5f, width * 0.5f / mainCam.aspect);
+
         isGridInitialized = true;
     }
 
