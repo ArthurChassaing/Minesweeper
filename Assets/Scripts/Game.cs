@@ -17,10 +17,14 @@ public class Game : MonoBehaviour
         isGridInitialized = false;
 
         // /!\ REMOVE THE FOLLOWING LINES WHEN MENU IMPLEMENTED
-        InitGrid(15, 5, 10);
+        // TESTS PURPOSE ONLY /!\
+        InitGrid(10, 10, 15);
         PlaceMines(1, 1);
+        foreach (Tile t in grid) // Flag the first mine
+        { if (t.IsMine) { t.ToggleFlagged(); break; } }
+        grid[1, 1].Reveal(true);
+        // REMOVE ABOUVE LINES /!\
     }
-
     public void Update()
     {
         if (!isGridInitialized) return;
@@ -31,7 +35,7 @@ public class Game : MonoBehaviour
     /// </summary>
     public void InitGrid(int width, int height, int mineCount)
     {
-        if (Math.Max(width, height) <= 3) throw new ArgumentException("Size of the grid is too small");
+        if (Mathf.Max(width, height) <= 3) throw new ArgumentException("Size of the grid is too small");
         if (mineCount <= 1) throw new ArgumentException("Bomb count must me greater than 1");
         if (width * height < mineCount - 1) throw new Exception("Too many bombs");
 
@@ -78,9 +82,9 @@ public class Game : MonoBehaviour
         }
 
         // Place the camera to show the entire grid
-        transform.position = new Vector3(width * 0.5f - 0.5f, height * 0.5f - 0.5f, -1);
+        transform.position = new Vector3(width * 0.5f - 0.5f, height * 0.5f - 0.5f, -10);
         Camera mainCam = GetComponent<Camera>();
-        mainCam.orthographicSize = Math.Max(height * 0.5f, width * 0.5f / mainCam.aspect);
+        mainCam.orthographicSize = Mathf.Max(height * 0.5f, width * 0.5f / mainCam.aspect);
 
         isGridInitialized = true;
     }
