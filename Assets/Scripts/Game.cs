@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Game : MonoBehaviour
@@ -10,25 +9,28 @@ public class Game : MonoBehaviour
     public int MineCount { get; private set; }
     private Tile[,] grid;
     public Tile this[int x, int y] { get => grid[x, y]; }
-    public Tile this[Vector2 coordinates] { get => grid[(int)coordinates.x, (int)coordinates.y]; }
     public Tile this[(int x, int y) coordinates] { get => grid[coordinates.x, coordinates.y]; }
-    public bool isGridInitialized { get; private set; }
-    public bool isMinesPlaced { get; private set; }
+    public bool IsGridInitialized { get; private set; }
+    public bool IsMinesPlaced { get; private set; }
+    public bool IsGameEnded { get; private set; }
+    public bool IsVictorious { get; private set; }
 
-    public void Start()
+    private void Start()
     {
-        isGridInitialized = false;
-        isMinesPlaced = false;
+        IsGridInitialized = false;
+        IsMinesPlaced = false;
+        IsGameEnded = false;
+        IsVictorious = false;
 
         // /!\ REMOVE THE FOLLOWING LINES WHEN MENU IMPLEMENTED
         // TESTS PURPOSE ONLY /!\
         InitGrid(10, 10, 15);
         // REMOVE ABOUVE LINES /!\
     }
-    public void Update()
+    private void Update()
     {
-        if (!isGridInitialized) return;
-        HandleInput();
+        if (IsGameEnded) return;
+        HandleInputs();
     }
 
     /// <summary>
@@ -87,7 +89,7 @@ public class Game : MonoBehaviour
         Camera mainCam = GetComponent<Camera>();
         mainCam.orthographicSize = Mathf.Max(height * 0.5f, width * 0.5f / mainCam.aspect);
 
-        isGridInitialized = true;
+        IsGridInitialized = true;
     }
 
     /// <summary>
@@ -95,10 +97,10 @@ public class Game : MonoBehaviour
     /// No mine will be placed on the clicked tile
     /// </summary>
     /// <param name="clickedTile">Position of the clicked tile in the grid</param>
-    public void PlaceMines(Vector2 clickedTile)
+    private void PlaceMines(Tile clickedTile)
     {
-        if (!isGridInitialized) throw new Exception("The grid is not initialized");
-        if (clickedTile.x < 0 || clickedTile.x >= Width || clickedTile.y < 0 || clickedTile.y >= Height)
+        if (!IsGridInitialized) throw new Exception("The grid is not initialized");
+        if (clickedTile.X < 0 || clickedTile.X >= Width || clickedTile.Y < 0 || clickedTile.Y >= Height)
             throw new ArgumentOutOfRangeException("The given position is not in the grid");
 
         // List tiles where we can put a mine on
@@ -110,7 +112,7 @@ public class Game : MonoBehaviour
                 remaingTiles.Add((x, y));
             }
         }
-        remaingTiles.Remove(((int)clickedTile.x, (int)clickedTile.y));
+        remaingTiles.Remove((clickedTile.X, clickedTile.Y));
 
         // Place the bombs
         (int x, int y) rand;
@@ -122,29 +124,71 @@ public class Game : MonoBehaviour
         }
     }
 
-    public Vector2 GetTileCoord()
+    /// <summary>
+    /// Get the tile under the mouse. 
+    /// </summary>
+    /// <returns>The tile under the mouse or null if there are not.</returns>
+    private Tile GetTileAtMouse()
     {
+        if (!IsGridInitialized) return null; // Can't get tile cord if tiles do not exist!
         Vector3 tileCoord = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        return new Vector2(
-            Mathf.Round(tileCoord.x),
-            Mathf.Round(tileCoord.y));
+        try
+        {
+            return this[(int)Mathf.Round(tileCoord.x), (int)Mathf.Round(tileCoord.y)];
+        }
+        catch (IndexOutOfRangeException)
+        {
+            return null;
+        }
     }
 
-    public void HandleInput()
+    /// <summary>
+    /// Handle the inputs in the game
+    /// </summary>
+    private void HandleInputs()
     {
+        if (!IsGridInitialized) return; // Can't handle input wihout a grid
 
+        // Left click -> reveal
         if (Input.GetButtonDown("Fire1"))
         {
-            if(!isMinesPlaced) 
+            Tile clickedTile = GetTileAtMouse();
+            if (clickedTile == null) return; // Must click on a tile!
+            if (!IsMinesPlaced) 
             {
-                PlaceMines(GetTileCoord());
-                isMinesPlaced = true;
+                PlaceMines(clickedTile);
+                IsMinesPlaced = true;
             }
-            this[GetTileCoord()].Reveal(true);
+            if (clickedTile.Reveal(true) || CheckForVictory())
+            {
+                // Game ended 
+                IsGameEnded = true;
+            }
         }
+
+        // Right click -> flag
         if (Input.GetButtonDown("Fire2"))
         {
-            this[GetTileCoord()].ToggleFlagged();
+            if (!IsMinesPlaced) return; // Can't place a flag on a empty grid
+            Tile clickedTile = GetTileAtMouse();
+            if (clickedTile == null) return; // Must click on a tile!
+            clickedTile.ToggleFlagged();
         }
+    }
+
+    /// <summary>
+    /// Check for the victory in the grid.
+    /// </summary>
+    /// <returns>True if all mines are flagged and all other tiles are discovered, false otherwise</returns>
+    private bool CheckForVictory()
+    {
+        if (!IsGridInitialized || !IsMinesPlaced) throw new Exception("Checking victory but the grid is not initialized or there are no mines in it");
+        foreach (Tile t in grid)
+        {
+            if ((t.IsMine && !t.IsFlagged) || (!t.IsMine && !t.IsRevealed))
+                return false;
+        }
+        IsVictorious = true;
+        return true;
     }
 }

@@ -42,7 +42,7 @@ public class Tile
         IsFlagged = false;
         IsRevealed = false;
         neighbors = new List<Tile>();
-        gameObject = Object.Instantiate(SquarePrefab, new Vector3(X, Y), Quaternion.identity);
+        gameObject = Object.Instantiate(SquarePrefab, new Vector2(X, Y), Quaternion.identity);
         gameObject.name = "Tile at (" + X + ", " + Y + ")";
     }
 
@@ -72,7 +72,7 @@ public class Tile
     /// <returns>True if a mine is revealed, false otherwise</returns>
     public bool Reveal(bool fromClick)
     {
-        if (IsRevealed) return false; // Can't reveal an already revealed tile
+        if (!fromClick && IsRevealed) return false; // Can't reveal an already revealed tile
         if (fromClick && IsFlagged) return false; // Can't click on a flagged tile
         if (IsFlagged && IsMine) return false; // Atomatic reveal can't reveal a flagged mine, but remove a flag on non-mine tiles
 
