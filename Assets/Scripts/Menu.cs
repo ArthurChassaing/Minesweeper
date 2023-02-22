@@ -25,5 +25,13 @@ public class Menu : MonoBehaviour
     {
         Application.Quit();
     }
-   
+
+
+    //Sous menu 
+
+    public void StartBeginnerGame() => StartGame(9,10,10);
+
+    public void StartIntermediateGame() => StartGame(16,16,40);
+
+    public void StartExpertGame() => StartGame(29, 16, 99);
 }
