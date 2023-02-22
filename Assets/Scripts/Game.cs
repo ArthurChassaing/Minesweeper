@@ -180,8 +180,8 @@ public class Game : MonoBehaviour
                     }
                     else
                     {
-                        if (t.IsMine && t != clickedTile) t.SetSkin(Tile.MineSprite);
-                        else if (t.IsFlagged && !t.IsMine) t.SetSkin(Tile.MineCrossedSprite);
+                        if (t.IsMine && t != clickedTile) t.SetSprite(Tile.MineSprite);
+                        else if (t.IsFlagged && !t.IsMine) t.SetSprite(Tile.MineCrossedSprite);
                     }
                 }
             }
