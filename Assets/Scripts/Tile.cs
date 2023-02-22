@@ -48,7 +48,6 @@ public class Tile
 
     public void SetBomb()
     {
-        gameObject.GetComponent<SpriteRenderer>().sprite = MineSprite;
         IsMine = true;
     }
 
