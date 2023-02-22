@@ -30,7 +30,6 @@ public class Game : MonoBehaviour
     }
     void Update()
     {
-        if (IsGameEnded) return;
         HandleInputs();
     }
 
@@ -152,7 +151,12 @@ public class Game : MonoBehaviour
     /// </summary>
     private void HandleInputs()
     {
-        if (!IsGridInitialized) return; // Can't handle input wihout a grid
+        if(Input.GetKeyDown(KeyCode.Escape)) // Return to main menu
+        {
+            SceneManager.LoadScene(0);
+        }
+
+        if (!IsGridInitialized || IsGameEnded) return; // Can't handle grid related input with no grid or if the game is ended
 
         // Left click -> reveal
         if (Input.GetButtonDown("Fire1"))
@@ -190,18 +194,15 @@ public class Game : MonoBehaviour
             if (clickedTile == null) return; // Must click on a tile!
             if (!IsMinesPlaced)
             {
-                PlaceMines(new Tile(-1, -1));
+                PlaceMines(new Tile(
+                    UnityEngine.Random.Range(0, Width),
+                    UnityEngine.Random.Range(0, Height)
+                ));
             }
             if (!clickedTile.IsRevealed) 
             { 
                 MineCount += clickedTile.ToggleFlagged() ? 1 : -1;
             }
-            
-        }
-
-        if(Input.GetKeyDown(KeyCode.Escape)) 
-        {
-            SceneManager.LoadScene(0);
         }
     }
 
