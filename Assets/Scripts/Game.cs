@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
@@ -176,6 +177,12 @@ public class Game : MonoBehaviour
             Tile clickedTile = GetTileAtMouse();
             if (clickedTile == null) return; // Must click on a tile!
             MineCount += clickedTile.ToggleFlagged() ? 1 : -1;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            //Application.Quit();
+            SceneManager.LoadScene(0);
         }
     }
 
