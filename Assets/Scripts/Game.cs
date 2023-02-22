@@ -84,12 +84,16 @@ public class Game : MonoBehaviour
             }
         }
 
-        // Place the camera to show the entire grid
-        transform.position = new Vector3(width * 0.5f - 0.5f, height * 0.5f - 0.5f, -10);
-        Camera mainCam = GetComponent<Camera>();
-        mainCam.orthographicSize = Mathf.Max(height * 0.5f, width * 0.5f / mainCam.aspect);
-
         IsGridInitialized = true;
+    }
+
+    /// <summary>
+    /// Center the camera on the grid and zoom perfectly to fit it in the screen.
+    /// </summary>
+    private void PlaceCamera()
+    {
+        transform.position = new Vector3(Width * 0.5f - 0.5f, Height * 0.5f - 0.5f, -10);
+        Camera.main.orthographicSize = Mathf.Max(Width * 0.5f / Camera.main.aspect, Height * 0.5f);
     }
 
     /// <summary>
@@ -171,7 +175,7 @@ public class Game : MonoBehaviour
         {
             Tile clickedTile = GetTileAtMouse();
             if (clickedTile == null) return; // Must click on a tile!
-            clickedTile.ToggleFlagged();
+            MineCount += clickedTile.ToggleFlagged() ? 1 : -1;
         }
     }
 

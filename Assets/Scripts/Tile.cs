@@ -34,6 +34,12 @@ public class Tile
     private List<Tile> neighbors;
     private GameObject gameObject;
 
+    /// <summary>
+    /// Create a new tile at the given coordinates.
+    /// The created tile has no flag and no mine, and is not revealed.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     public Tile(int x, int y)
     {
         X = x;
@@ -46,27 +52,39 @@ public class Tile
         gameObject.name = "Tile at (" + X + ", " + Y + ")";
     }
 
+    /// <summary>
+    /// Place a bomb in the tile.
+    /// </summary>
     public void SetBomb()
     {
         IsMine = true;
     }
 
-    public void ToggleFlagged()
+    /// <summary>
+    /// Toggle flag placement on the tile.
+    /// </summary>
+    /// <returns>True if a flag has been placed, false if a flag has been removed</returns>
+    public bool ToggleFlagged()
     {
         IsFlagged = !IsFlagged;
         if (IsFlagged)
             gameObject.GetComponent<SpriteRenderer>().sprite = FlagSprite;
         else
             gameObject.GetComponent<SpriteRenderer>().sprite = UnknownSprite;
+        return IsFlagged;
     }
 
+    /// <summary>
+    /// Add a neighbor to the tile.
+    /// </summary>
+    /// <param name="neighbor"></param>
     public void AddNeighbor(Tile neighbor)
     {
         neighbors.Add(neighbor);
     }
 
     /// <summary>
-    /// Reveal a tile and it's neighbours if it's empty.
+    /// Reveal the tile and it's neighbours if it's empty.
     /// </summary>
     /// <param name="fromClick">true if called by the user, else if it's an automatic reveal (called by another tile)</param>
     /// <returns>True if a mine is revealed, false otherwise</returns>
