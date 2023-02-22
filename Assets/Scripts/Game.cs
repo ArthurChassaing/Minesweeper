@@ -192,7 +192,11 @@ public class Game : MonoBehaviour
             {
                 PlaceMines(new Tile(-1, -1));
             }
-            MineCount += clickedTile.ToggleFlagged() ? 1 : -1;
+            if (!clickedTile.IsRevealed) 
+            { 
+                MineCount += clickedTile.ToggleFlagged() ? 1 : -1;
+            }
+            
         }
 
         if(Input.GetKeyDown(KeyCode.Escape)) 
