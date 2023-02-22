@@ -168,6 +168,18 @@ public class Game : MonoBehaviour
             {
                 // Game ended 
                 IsGameEnded = true;
+                foreach (Tile t in grid)
+                {
+                    if (IsVictorious)
+                    {
+                        if (t.IsMine && !t.IsFlagged) t.ToggleFlagged();
+                    }
+                    else
+                    {
+                        if (t.IsMine && t != clickedTile) t.SetSkin(Tile.MineSprite);
+                        else if (t.IsFlagged && !t.IsMine) t.SetSkin(Tile.MineCrossedSprite);
+                    }
+                }
             }
         }
 
@@ -176,12 +188,15 @@ public class Game : MonoBehaviour
         {
             Tile clickedTile = GetTileAtMouse();
             if (clickedTile == null) return; // Must click on a tile!
+            if (!IsMinesPlaced)
+            {
+                PlaceMines(new Tile(-1, -1));
+            }
             MineCount += clickedTile.ToggleFlagged() ? 1 : -1;
         }
 
         if(Input.GetKeyDown(KeyCode.Escape)) 
         {
-            //Application.Quit();
             SceneManager.LoadScene(0);
         }
     }
@@ -199,10 +214,6 @@ public class Game : MonoBehaviour
                 return false;
         }
         IsVictorious = true;
-        foreach(Tile t in grid)
-        {
-            if (t.IsMine && !t.IsFlagged) t.ToggleFlagged();
-        }
         return true;
     }
 }

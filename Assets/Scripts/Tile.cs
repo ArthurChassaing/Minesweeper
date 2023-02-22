@@ -126,10 +126,17 @@ public class Tile
             // but user can if the number of flag equals the number
             return false;
         }
+        bool b = false;
         foreach (Tile neighbor in neighbors)
         {
-            neighbor.Reveal(false);
+            b |= neighbor.Reveal(false);
         }
-        return false;
+        return b;
     }
+
+    /// <summary>
+    /// Change the sprite of the tile.
+    /// </summary>
+    /// <param name="sprite"></param>
+    public void SetSkin(Sprite sprite) => gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
 }
