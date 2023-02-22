@@ -15,19 +15,19 @@ public class Game : MonoBehaviour
     public bool IsGameEnded { get; private set; }
     public bool IsVictorious { get; private set; }
 
-    private void Start()
+    void Start()
     {
         IsGridInitialized = false;
         IsMinesPlaced = false;
         IsGameEnded = false;
         IsVictorious = false;
 
-        // /!\ REMOVE THE FOLLOWING LINES WHEN MENU IMPLEMENTED
-        // TESTS PURPOSE ONLY /!\
-        InitGrid(10, 10, 15);
-        // REMOVE ABOUVE LINES /!\
+        // Get data from DontDestroy
+        DontDestroy dd = FindAnyObjectByType<DontDestroy>();
+        InitGrid(dd.width, dd.height, dd.mineCount);
+        PlaceCamera();
     }
-    private void Update()
+    void Update()
     {
         if (IsGameEnded) return;
         HandleInputs();
@@ -90,7 +90,7 @@ public class Game : MonoBehaviour
     /// <summary>
     /// Center the camera on the grid and zoom perfectly to fit it in the screen.
     /// </summary>
-    private void PlaceCamera()
+    public void PlaceCamera()
     {
         transform.position = new Vector3(Width * 0.5f - 0.5f, Height * 0.5f - 0.5f, -10);
         Camera.main.orthographicSize = Mathf.Max(Width * 0.5f / Camera.main.aspect, Height * 0.5f);
