@@ -169,7 +169,6 @@ public class Game : MonoBehaviour
         // Right click -> flag
         if (Input.GetButtonDown("Fire2"))
         {
-            if (!IsMinesPlaced) return; // Can't place a flag on a empty grid
             Tile clickedTile = GetTileAtMouse();
             if (clickedTile == null) return; // Must click on a tile!
             clickedTile.ToggleFlagged();
@@ -185,10 +184,14 @@ public class Game : MonoBehaviour
         if (!IsGridInitialized || !IsMinesPlaced) throw new Exception("Checking victory but the grid is not initialized or there are no mines in it");
         foreach (Tile t in grid)
         {
-            if ((t.IsMine && !t.IsFlagged) || (!t.IsMine && !t.IsRevealed))
+            if (!t.IsMine && !t.IsRevealed)
                 return false;
         }
         IsVictorious = true;
+        foreach(Tile t in grid)
+        {
+            if (t.IsMine && !t.IsFlagged) t.ToggleFlagged();
+        }
         return true;
     }
 }
