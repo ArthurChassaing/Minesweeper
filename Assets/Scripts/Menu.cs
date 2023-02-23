@@ -7,7 +7,7 @@ public class Menu : MonoBehaviour
 
     private void Awake()
     {
-        dd = FindAnyObjectByType<DontDestroy>();
+        dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroy)).GetComponent<DontDestroy>();
         dd.width = 20;
         dd.height = 20;
         dd.mineCount = 80;
@@ -18,6 +18,10 @@ public class Menu : MonoBehaviour
 
     public void StartGame(int width, int height, int mineCount)
     {
+        // Make sure data is correct
+        if (Grid.IsSizeTooSmall(width, height)) return;
+        if (Grid.IsMineCountIncorrect(width, height, mineCount)) return;
+
         // Give data to DontDestroy
         dd.width = width;
         dd.height = height;

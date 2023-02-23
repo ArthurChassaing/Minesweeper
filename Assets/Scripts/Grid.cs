@@ -23,9 +23,8 @@ public class Grid
     /// </summary>
     public Grid(int width, int height, int mineCount)
     {
-        if (Mathf.Max(width, height) <= 3) throw new ArgumentException("Size of the grid is too small");
-        if (mineCount <= 1) throw new ArgumentException("Bomb count must me greater than 1");
-        if (width * height < mineCount - 1) throw new Exception("Too many bombs");
+        if (IsSizeTooSmall(width, height)) throw new ArgumentException("Size of the grid is too small");
+        if (IsMineCountIncorrect(width, height, mineCount)) throw new ArgumentException("The mine count is incorrect");
 
         Width = width;
         Height = height;
@@ -210,4 +209,22 @@ public class Grid
         }
         IsEnded = true;
     }
+
+    // Statics:
+
+    /// <summary>
+    /// Check if the size of the grid si too small.
+    /// Is considered too small a grid with a width or a height less than 3.
+    /// </summary>
+    public static bool IsSizeTooSmall(int width, int height) => width < 3 || height < 3;
+
+    /// <summary>
+    /// Check if the mine count is incorrect.
+    /// A mine count is incorrect if it's less than 1 or more than or equal to the width times the height.
+    /// </summary>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <param name="mineCount"></param>
+    /// <returns></returns>
+    public static bool IsMineCountIncorrect(int width, int height, int mineCount) => mineCount < 1 || width * height <= mineCount;
 }
