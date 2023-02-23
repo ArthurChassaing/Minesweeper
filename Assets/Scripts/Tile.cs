@@ -26,117 +26,68 @@ public class Tile
     public static Sprite UnknownSprite { get; } = Resources.Load<Sprite>("Textures/UnknownSquare");
     public const int SpriteSize = 32;
 
-    public int X { get; }
-    public int Y { get; }
+    public Vector2Int Position { get; }
     public bool IsMine { get; private set; }
     public bool IsFlagged { get; private set; }
     public bool IsRevealed { get; private set; }
-    private List<Tile> neighbors;
     private GameObject gameObject;
 
     /// <summary>
-    /// Create a new tile at the given coordinates.
+    /// Create a new tile at the given coordinates, with a gameObject.
     /// The created tile has no flag and no mine, and is not revealed.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
     public Tile(int x, int y)
     {
-        X = x;
-        Y = y;
+        Position = new Vector2Int(x, y);
         IsMine = false;
         IsFlagged = false;
         IsRevealed = false;
-        neighbors = new List<Tile>();
-        gameObject = Object.Instantiate(SquarePrefab, new Vector2(X, Y), Quaternion.identity);
-        gameObject.name = "Tile at (" + X + ", " + Y + ")";
+        gameObject = Object.Instantiate(SquarePrefab, new Vector2(x, y), Quaternion.identity);
+        gameObject.name = "Tile at (" + x + ", " + y + ")";
     }
 
     /// <summary>
     /// Place a bomb in the tile.
     /// </summary>
-    public void SetBomb()
-    {
-        IsMine = true;
-    }
+    public void SetBomb() => IsMine = true;
 
     /// <summary>
-    /// Toggle flag placement on the tile.
+    /// Toggle flag placement on the tile. Change the tile's skin.
     /// </summary>
     /// <returns>True if a flag has been placed, false if a flag has been removed</returns>
-    public bool ToggleFlagged()
+    public bool ToggleFlag()
     {
+        if (IsRevealed) throw new System.Exception("Can't call ToggleFlagged on a revealed tile");
         IsFlagged = !IsFlagged;
-        if (IsFlagged)
-            gameObject.GetComponent<SpriteRenderer>().sprite = FlagSprite;
-        else
-            gameObject.GetComponent<SpriteRenderer>().sprite = UnknownSprite;
+        if (IsFlagged) SetSprite(FlagSprite);
+        else SetSprite(UnknownSprite);
         return IsFlagged;
     }
 
     /// <summary>
-    /// Add a neighbor to the tile.
+    /// Reveal the tile. Change the tile's skin.
     /// </summary>
-    /// <param name="neighbor"></param>
-    public void AddNeighbor(Tile neighbor)
+    /// <returns>True if a mine has been revealed, false otherwise</returns>
+    public bool Reveal()
     {
-        neighbors.Add(neighbor);
-    }
-
-    /// <summary>
-    /// Reveal the tile and it's neighbours if it's empty.
-    /// </summary>
-    /// <param name="fromClick">true if called by the user, else if it's an automatic reveal (called by another tile)</param>
-    /// <returns>True if a mine is revealed, false otherwise</returns>
-    public bool Reveal(bool fromClick)
-    {
-        if (!fromClick && IsRevealed) return false; // Can't reveal an already revealed tile
-        if (fromClick && IsFlagged) return false; // Can't click on a flagged tile
-        if (IsFlagged && IsMine) return false; // Atomatic reveal can't reveal a flagged mine, but remove a flag on non-mine tiles
-
+        if (IsFlagged) throw new System.Exception("Can't call Reveal on a flagged tile");
         IsRevealed = true;
-        if (IsMine)
-        {
-            gameObject.GetComponent<SpriteRenderer>().sprite = MineClickedSprite;
-            return true;
-        }
-
-        // Reavel itself
-        int bombCount = 0;
-        int flagCount = 0;
-        foreach (Tile neighbor in neighbors)
-        {
-            if (neighbor.IsMine)
-            {
-                bombCount++;
-            }
-            if (neighbor.IsFlagged)
-            {
-                flagCount++;
-            }
-        }
-        gameObject.GetComponent<SpriteRenderer>().sprite = BlankSprite;
-        gameObject.GetComponentInChildren<TextMeshPro>().text = bombCount.ToString();
-        gameObject.GetComponentInChildren<TextMeshPro>().color = NumColors.TryGetValue(bombCount, out Color c) ? c : new Color(0, 0, 0, 255);
-
-        // Reveal all neighbors
-        if (fromClick ? bombCount != flagCount : bombCount > 0)
-        {
-            // Automatic reveal can't reveal around a number,
-            // but user can if the number of flag equals the number
-            return false;
-        }
-        bool b = false;
-        foreach (Tile neighbor in neighbors)
-        {
-            b |= neighbor.Reveal(false);
-        }
-        return b;
+        if (IsMine) SetSprite(MineClickedSprite);
+        else SetSprite(BlankSprite);
+        return IsMine;
     }
 
     /// <summary>
     /// Change the sprite of the tile.
     /// </summary>
     /// <param name="sprite"></param>
-    public void SetSkin(Sprite sprite) => gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
+    public void SetSprite(Sprite sprite) => gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
+
+    public void SetNumber(int num)
+    {
+        gameObject.GetComponentInChildren<TextMeshPro>().text = num.ToString();
+        gameObject.GetComponentInChildren<TextMeshPro>().color = Tile.NumColors[num];
+    }
 }
