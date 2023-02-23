@@ -86,31 +86,50 @@ public class Grid
     {
         if (!IsTileInGrid(clickPos) || IsEnded) return false;
         if (!IsMinesPlaced) PlaceMines(clickPos);
-        if (this[clickPos].IsFlagged || this[clickPos].IsRevealed) return false;
+        if (this[clickPos].IsFlagged) return false;
+        bool clickOnRevealed = this[clickPos].IsRevealed;
 
         // Reveal all empty tiles connected to the tile revealed
         List<Tile> tilesToReveal = new() { this[clickPos] };
         Tile currentTile;
+        List<Tile> neighbours;
+        int mineCount, flagCount;
         while (tilesToReveal.Count > 0)
         {
+            // Reveal the first tile in the list
             currentTile = tilesToReveal.First();
-            if (currentTile.Reveal()) // Mine ?
+            if (currentTile.Reveal())
             {
                 SetEnded();
                 return true;
             }
 
-            // Check for mines, if not: add neighbours to reveal list, else: write number of mines on tile
-            int mineCount = 0;
-            List<Tile> neighbours = GetNeighbours(currentTile);
+            // Check for mines and flags in it's neighbourhood
+            neighbours = GetNeighbours(currentTile);
+            mineCount = 0;
+            flagCount = 0;
             foreach (Tile n in neighbours)
             {
                 if (n.IsMine) mineCount++;
+                if (n.IsFlagged) flagCount++;
             }
+
+            if (clickOnRevealed && mineCount > 0 && mineCount == flagCount)
+            {
+                foreach (Tile n in neighbours)
+                {
+                    if (!n.IsRevealed && !n.IsFlagged) tilesToReveal.Add(n);
+                }
+                clickOnRevealed = false;
+                continue;
+            }
+
+            // No mines around: Reveal neighbours
             if (mineCount == 0)
             {
                 tilesToReveal = tilesToReveal.Union(neighbours).ToList();
             }
+            // Else: There is mines around: Write the number of mines on the tile
             else
             {
                 currentTile.SetNumber(mineCount);
