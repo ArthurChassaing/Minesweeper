@@ -210,6 +210,15 @@ public class Grid
         IsEnded = true;
     }
 
+    public void Destroy()
+    {
+        foreach (Tile t in tiles)
+        {
+            t.Destroy();
+        }
+    }
+
+
     // Statics:
 
     /// <summary>

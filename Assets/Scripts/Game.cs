@@ -1,20 +1,47 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using System.Data;
 
 public class Game : MonoBehaviour
 {
     private Grid grid = null;
 
+    [Header("Component")]
+    public TextMeshProUGUI TimerText;
+    public TextMeshProUGUI MineCount;
+    private DontDestroy dd;
+    private float timer; 
+
     void Start()
     {
         // Get data from DontDestroy
-        DontDestroy dd = FindAnyObjectByType<DontDestroy>();
-        grid = new Grid(dd.width, dd.height, dd.mineCount);
+        dd = FindAnyObjectByType<DontDestroy>();
+        InitGrid();
         PlaceCamera();
+        
     }
     void Update()
     {
         HandleInputs();
+        UiUpdate();
+    }
+    
+    public void InitGrid()
+    {
+        if(grid != null) { grid.Destroy(); }
+        grid = new Grid(dd.width, dd.height, dd.mineCount);
+        timer = 0;
+    }
+
+    /// <summary>
+    /// Set UI in game with timer and minecount. 
+    /// </summary>
+    public void UiUpdate()
+    {
+        if (grid.IsMinesPlaced && !grid.IsEnded) { timer += Time.deltaTime; }
+        TimerText.text = timer.ToString("0");
+        MineCount.text = (grid.MineCount - grid.FlagCount).ToString();
     }
 
 

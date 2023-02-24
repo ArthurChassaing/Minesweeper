@@ -90,4 +90,9 @@ public class Tile
         gameObject.GetComponentInChildren<TextMeshPro>().text = num.ToString();
         gameObject.GetComponentInChildren<TextMeshPro>().color = Tile.NumColors[num];
     }
+
+    public void Destroy()
+    {
+        Object.Destroy(gameObject);
+    }
 }
