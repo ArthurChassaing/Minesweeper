@@ -27,6 +27,10 @@ public class Game : MonoBehaviour
         UiUpdate();
     }
     
+
+    /// <summary>
+    /// Initialize grid of the game
+    /// </summary>
     public void InitGrid()
     {
         if(grid != null) { grid.Destroy(); }

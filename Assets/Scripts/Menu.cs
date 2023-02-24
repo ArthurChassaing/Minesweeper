@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour
 {
     private static DontDestroy dd;
+    [Header("Component")]
+    public AudioSource audio;
+
+
 
     private void Awake()
     {
@@ -29,7 +33,15 @@ public class Menu : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void StartGame() => SceneManager.LoadScene(1);
+    public void PlaySound()
+    {
+        audio.Play();
+    }
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene(1);
+    }
 
     public void QuitGame()
     {
