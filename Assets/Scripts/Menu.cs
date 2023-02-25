@@ -5,20 +5,34 @@ public class Menu : MonoBehaviour
 {
     private static DontDestroy dd;
     [Header("Component")]
-    public AudioSource audio;
+    public AudioSource buttonSound;
 
 
 
     private void Awake()
     {
-        dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroy)).GetComponent<DontDestroy>();
-        dd.width = 20;
-        dd.height = 20;
-        dd.mineCount = 80;
+        dd = FindAnyObjectByType<DontDestroy>();
+        if (dd == null)
+            dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroy)).GetComponent<DontDestroy>();
         PlaceCamera();
     }
 
+    /// <summary>
+    /// Set Camera position and size to it's default values.
+    /// </summary>
     private void PlaceCamera() => Camera.main.Reset();
+
+    /// <summary>
+    /// Close the application.
+    /// </summary>
+    public void QuitGame() => Application.Quit();
+
+    // Start games
+
+    /// <summary>
+    /// Change scene to GameScene. Data is send via the DontDestroy object.
+    /// </summary>
+    public void StartGame() => SceneManager.LoadScene(1);
 
     public void StartGame(int width, int height, int mineCount)
     {
@@ -30,37 +44,21 @@ public class Menu : MonoBehaviour
         dd.width = width;
         dd.height = height;
         dd.mineCount = mineCount;
-        SceneManager.LoadScene(1);
+        StartGame();
     }
 
-    public void PlaySound()
-    {
-        audio.Play();
-    }
+    public void PlayButtonSound() => buttonSound.Play();
 
-    public void StartGame()
-    {
-        SceneManager.LoadScene(1);
-    }
+    public void StartBeginnerGame() => StartGame(9, 10, 10);
 
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
-
-
-    //Sous menu 
-
-    public void StartBeginnerGame() => StartGame(9,10,10);
-
-    public void StartIntermediateGame() => StartGame(16,16,40);
+    public void StartIntermediateGame() => StartGame(16, 16, 40);
 
     public void StartExpertGame() => StartGame(29, 16, 99);
 
-    // custom game
+    // Parse fields
 
-    public void GetWidthField(string value) => int.TryParse(value, out dd.width);
-    public void GetHeightField(string value) => int.TryParse(value, out dd.height);
-    public void GetMineCountField(string value) => int.TryParse(value, out dd.mineCount);
+    public void ParseWidthField(string value) => int.TryParse(value, out dd.width);
+    public void ParseHeightField(string value) => int.TryParse(value, out dd.height);
+    public void ParseMineCountField(string value) => int.TryParse(value, out dd.mineCount);
 
 }

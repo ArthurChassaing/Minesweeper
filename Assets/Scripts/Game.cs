@@ -1,39 +1,46 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-using System.Data;
 
 public class Game : MonoBehaviour
 {
+    const int tileSpriteSize = 16;
+    static readonly float moveDeadZone = 0.1f;
+
+    private bool mouse0Held = false;
+    private bool mouse1Held = false;
+    private bool dragging = false;
+    Vector2 mouseMovement = Vector2.zero;
+
+    private DontDestroy dd;
     private Grid grid = null;
 
     [Header("Component")]
-    public TextMeshProUGUI TimerText;
-    public TextMeshProUGUI MineCount;
-    private DontDestroy dd;
-    private float timer; 
+    public TextMeshProUGUI TopLeftText;
+    private float timer;
 
     void Start()
     {
         // Get data from DontDestroy
         dd = FindAnyObjectByType<DontDestroy>();
-        InitGrid();
+        if (dd == null)
+            dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroy)).GetComponent<DontDestroy>();
+        grid = new Grid(dd.width, dd.height, dd.mineCount);
         PlaceCamera();
-        
     }
+
     void Update()
     {
         HandleInputs();
         UiUpdate();
     }
-    
 
     /// <summary>
-    /// Initialize grid of the game
+    /// Init the grid. Destroy previous grid if it exists.
     /// </summary>
     public void InitGrid()
     {
-        if(grid != null) { grid.Destroy(); }
+        if (grid != null) grid.Destroy();
         grid = new Grid(dd.width, dd.height, dd.mineCount);
         timer = 0;
     }
@@ -44,8 +51,8 @@ public class Game : MonoBehaviour
     public void UiUpdate()
     {
         if (grid.IsMinesPlaced && !grid.IsEnded) { timer += Time.deltaTime; }
-        TimerText.text = timer.ToString("0");
-        MineCount.text = (grid.MineCount - grid.FlagCount).ToString();
+        TopLeftText.text = "Mines left: " + (grid.MineCount - grid.FlagCount).ToString() + '\n';
+        TopLeftText.text += "Time: " + timer.ToString("0");
     }
 
 
@@ -55,7 +62,7 @@ public class Game : MonoBehaviour
     public void PlaceCamera()
     {
         transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
-        Camera.main.orthographicSize = Mathf.Max(grid.Width * 0.5f / Camera.main.aspect, grid.Height * 0.5f);
+        Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
     }
 
     /// <summary>
@@ -74,23 +81,58 @@ public class Game : MonoBehaviour
     private void HandleInputs()
     {
         // Escape -> Return to menu
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene(0);
+            return;
         }
 
-        // Left click -> reveal
-        if (Input.GetButtonDown("Fire1"))
+        // Scroll -> Zoom
+        if (Input.mouseScrollDelta.y != 0)
         {
-            Vector2Int clickPos = GetIntMouseCoordinates();
-            grid.RevealTile(clickPos);
+            Camera.main.orthographicSize = Mathf.Max(Camera.main.orthographicSize - Input.mouseScrollDelta.y, 1 + Camera.main.orthographicSize % 1);
         }
 
-        // Right click -> flag
-        if (Input.GetButtonDown("Fire2"))
+        // Mouse inputs
+        if (Input.GetKeyDown(KeyCode.Mouse0)) mouse0Held = true;
+        if (Input.GetKeyDown(KeyCode.Mouse1)) mouse1Held = true;
+
+        // Mouse hold any click
+        if (mouse0Held || mouse1Held)
         {
-            Vector2Int clickPos = GetIntMouseCoordinates();
-            grid.ToggleFlagOnTile(clickPos);
+            mouseMovement += new Vector2(-Input.GetAxis("Mouse X"), -Input.GetAxis("Mouse Y"));
+            if (Mathf.Abs(mouseMovement.x) > moveDeadZone || Mathf.Abs(mouseMovement.y) > moveDeadZone)
+            {
+                dragging = true;
+                Camera.main.transform.Translate(mouseMovement * Time.deltaTime * tileSpriteSize * Camera.main.orthographicSize);
+                mouseMovement = Vector2.zero;
+            }
+        }
+
+        // Left click
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            if (!dragging)
+            {
+                Vector2Int clickPos = GetIntMouseCoordinates();
+                grid.RevealTile(clickPos);
+            }
+            mouse0Held = false;
+            mouseMovement = Vector2.zero;
+            dragging = false;
+        }
+
+        // Right click
+        if (Input.GetKeyUp(KeyCode.Mouse1))
+        {
+            if (!dragging)
+            {
+                Vector2Int clickPos = GetIntMouseCoordinates();
+                grid.ToggleFlagOnTile(clickPos);
+            }
+            mouse1Held = false;
+            mouseMovement = Vector2.zero;
+            dragging = false;
         }
     }
 }

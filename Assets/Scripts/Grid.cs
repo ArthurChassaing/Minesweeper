@@ -210,6 +210,9 @@ public class Grid
         IsEnded = true;
     }
 
+    /// <summary>
+    /// Destroy each tile of the grid.
+    /// </summary>
     public void Destroy()
     {
         foreach (Tile t in tiles)

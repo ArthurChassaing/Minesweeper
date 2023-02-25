@@ -85,12 +85,19 @@ public class Tile
     /// <param name="sprite"></param>
     public void SetSprite(Sprite sprite) => gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
 
+    /// <summary>
+    /// Change the number displayed on the tile.
+    /// </summary>
+    /// <param name="num"></param>
     public void SetNumber(int num)
     {
         gameObject.GetComponentInChildren<TextMeshPro>().text = num.ToString();
         gameObject.GetComponentInChildren<TextMeshPro>().color = Tile.NumColors[num];
     }
 
+    /// <summary>
+    /// Destroy the tile.
+    /// </summary>
     public void Destroy()
     {
         Object.Destroy(gameObject);
