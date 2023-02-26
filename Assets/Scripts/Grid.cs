@@ -53,7 +53,7 @@ public class Grid
 
     /// <summary>
     /// Place all mines randomly in the grid.
-    /// No mine will be placed on the clicked tile
+    /// No mine will be placed on the clicked tile and its neighbours.
     /// </summary>
     /// <param name="clickedPos">Position of the clicked tile in the grid</param>
     public void PlaceMines(Vector2Int? clickedPos)
@@ -61,13 +61,16 @@ public class Grid
         if (!clickedPos.HasValue || !IsTileInGrid(clickedPos.Value))
             throw new ArgumentOutOfRangeException("The given position is not in the grid");
 
+        List<Tile> clickedAndNeighbours = GetNeighbours(this[clickedPos.Value]).ToList();
+        clickedAndNeighbours.Add(this[clickedPos.Value]);
+
         // Place the mines
         Vector2Int rand;
         for (int i = 0; i < MineCount; i++)
         {
             // Get random coordinates (not a mine)
             do { rand = new Vector2Int(UnityEngine.Random.Range(0, Width), UnityEngine.Random.Range(0, Height)); }
-            while (this[rand].IsMine || rand == clickedPos);
+            while (this[rand].IsMine || clickedAndNeighbours.Contains(this[rand]));
 
             this[rand].SetBomb();
         }
@@ -232,11 +235,11 @@ public class Grid
 
     /// <summary>
     /// Check if the mine count is incorrect.
-    /// A mine count is incorrect if it's less than 1 or more than or equal to the width times the height.
+    /// A mine count is incorrect if it's less than 1 or more than the width times the height minus 9.
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
     /// <param name="mineCount"></param>
     /// <returns></returns>
-    public static bool IsMineCountIncorrect(int width, int height, int mineCount) => mineCount < 1 || width * height <= mineCount;
+    public static bool IsMineCountIncorrect(int width, int height, int mineCount) => mineCount < 1 || mineCount > width * height - 9;
 }
