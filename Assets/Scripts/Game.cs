@@ -19,6 +19,13 @@ public class Game : MonoBehaviour
     public TextMeshProUGUI TopLeftText;
     private float timer;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip click;
+    public AudioClip explosion;
+    public AudioClip flag;
+    public AudioClip victory;
+
     void Start()
     {
         // Get data from DontDestroy
@@ -115,7 +122,18 @@ public class Game : MonoBehaviour
             if (!dragging)
             {
                 Vector2Int clickPos = GetIntMouseCoordinates();
-                grid.RevealTile(clickPos);
+                if (grid.RevealTile(clickPos))
+                {
+                    if (grid.IsEnded)
+                    {
+                        if (grid.IsVictorious)
+                            audioSource.clip = victory;
+                        else
+                            audioSource.clip = explosion;
+                    }
+                    else audioSource.clip = click;
+                    audioSource.Play();
+                }
             }
             mouse0Held = false;
             mouseMovement = Vector2.zero;
@@ -128,7 +146,11 @@ public class Game : MonoBehaviour
             if (!dragging)
             {
                 Vector2Int clickPos = GetIntMouseCoordinates();
-                grid.ToggleFlagOnTile(clickPos);
+                if (grid.ToggleFlagOnTile(clickPos))
+                {
+                    audioSource.clip = flag;
+                    audioSource.Play();
+                }
             }
             mouse1Held = false;
             mouseMovement = Vector2.zero;

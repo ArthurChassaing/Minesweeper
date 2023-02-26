@@ -4,11 +4,7 @@ using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour
 {
     private static DontDestroy dd;
-    [Header("Component")]
-    public AudioSource buttonSound;
-
-
-
+   
     private void Awake()
     {
         dd = FindAnyObjectByType<DontDestroy>();
@@ -46,8 +42,6 @@ public class Menu : MonoBehaviour
         dd.mineCount = mineCount;
         StartGame();
     }
-
-    public void PlayButtonSound() => buttonSound.Play();
 
     public void StartBeginnerGame() => StartGame(9, 10, 10);
 
