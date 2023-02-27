@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &16118772 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2653836237531473351, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
+  m_PrefabInstance: {fileID: 1427287921}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &75878760
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,7 +645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2653836237531473349, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
       propertyPath: m_Text
-      value: 80
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2653836237531473349, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
@@ -1247,6 +1252,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3706533977062771130, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
   m_PrefabInstance: {fileID: 1257493821}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &757413533 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2653836237531473351, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
+  m_PrefabInstance: {fileID: 229157193}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &809374539
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,6 +1732,9 @@ MonoBehaviour:
   SettingsMenu: {fileID: 0}
   StartGameMenu: {fileID: 809374539}
   CustomGameMenu: {fileID: 1309609440}
+  WidthField: {fileID: 16118772}
+  HeightField: {fileID: 1921402608}
+  MineCountField: {fileID: 757413533}
 --- !u!1001 &1257493821
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2062,7 +2075,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2653836237531473349, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
       propertyPath: m_Text
-      value: 20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2653836237531473349, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
@@ -2398,7 +2411,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2653836237531473349, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
       propertyPath: m_Text
-      value: 20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2653836237531473349, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
@@ -2769,4 +2782,9 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3706533977062771130, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
   m_PrefabInstance: {fileID: 1813024702}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1921402608 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2653836237531473351, guid: 0e4c962c57500f34587ef9b96f2570cb, type: 3}
+  m_PrefabInstance: {fileID: 1338477488}
   m_PrefabAsset: {fileID: 0}
