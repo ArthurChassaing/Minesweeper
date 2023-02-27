@@ -8,7 +8,7 @@ public class DontDestroyAudioSource : MonoBehaviour
     public AudioClip click1;
     public AudioClip click2;
     public AudioClip explosion;
-    public AudioClip victory;
+    public AudioClip audioStartGame;
 
     void Awake()
     {
@@ -17,7 +17,7 @@ public class DontDestroyAudioSource : MonoBehaviour
         click1 = Resources.Load<AudioClip>("Audio/Click1");
         click2 = Resources.Load<AudioClip>("Audio/Click2");
         explosion = Resources.Load<AudioClip>("Audio/Explosion");
-        victory = Resources.Load<AudioClip>("Audio/Victory");
+        audioStartGame = Resources.Load<AudioClip>("Audio/Victory");
     }
 
     void Play(AudioClip clip)
@@ -29,5 +29,5 @@ public class DontDestroyAudioSource : MonoBehaviour
     public void PlayClick1() => Play(click1);
     public void PlayClick2() => Play(click2);
     public void PlayExplosion() => Play(explosion);
-    public void PlayVictory() => Play(victory);
+    public void PlayAudioStartGame() => Play(audioStartGame);
 }

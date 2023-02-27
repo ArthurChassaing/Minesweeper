@@ -47,24 +47,27 @@ public class Menu : MonoBehaviour
     public void CloseStartGameMenu() => StartGameMenu.SetActive(false);
     public void OpenCustomGameMenu() => OpenMenu(CustomGameMenu);
     public void CloseCustomGameMenu() => CustomGameMenu.SetActive(false);
-    
+
     // Start games
 
     /// <summary>
     /// Change scene to GameScene. Data is send via the DontDestroy object.
     /// </summary>
-    public void StartGame() => SceneManager.LoadScene(1);
+    public void StartGame()
+    {
+        // Make sure data is correct
+        if (Grid.IsSizeTooSmall(dd.width, dd.height)) return;
+        if (Grid.IsMineCountIncorrect(dd.width, dd.height, dd.mineCount)) return;
+        SceneManager.LoadScene(1);
+    }
 
     public void StartGame(int width, int height, int mineCount)
     {
-        // Make sure data is correct
-        if (Grid.IsSizeTooSmall(width, height)) return;
-        if (Grid.IsMineCountIncorrect(width, height, mineCount)) return;
-
         // Give data to DontDestroy
         dd.width = width;
         dd.height = height;
         dd.mineCount = mineCount;
+        
         StartGame();
     }
 

@@ -30,7 +30,7 @@ public class Game : MonoBehaviour
         if (audioSource == null)
             audioSource = new GameObject("Don't Destroy: Audio Source", typeof(DontDestroyAudioSource)).GetComponent<DontDestroyAudioSource>();
 
-        grid = new Grid(dd.width, dd.height, dd.mineCount);
+        InitGrid();
         PlaceCamera();
     }
 
@@ -48,8 +48,8 @@ public class Game : MonoBehaviour
         if (grid != null)
         {
             grid.Destroy();
-            audioSource.PlayExplosion();
         }
+        audioSource.PlayAudioStartGame();
         grid = new Grid(dd.width, dd.height, dd.mineCount);
         timer = 0;
     }
@@ -72,7 +72,6 @@ public class Game : MonoBehaviour
     {
         transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
         Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
-        audioSource.PlayClick2();
     }
 
     /// <summary>
@@ -130,7 +129,7 @@ public class Game : MonoBehaviour
                     if (grid.IsEnded)
                     {
                         if (grid.IsVictorious)
-                            audioSource.PlayVictory();
+                            audioSource.PlayAudioStartGame();
                         else
                             audioSource.PlayExplosion();
                     }
