@@ -2160,7 +2160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3706533977062771128, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: CloseStartGameMenu
+      value: OpenStartGameMenu
       objectReference: {fileID: 0}
     - target: {fileID: 3706533977062771128, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
