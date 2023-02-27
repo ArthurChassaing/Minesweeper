@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    private static DontDestroyGridData dd;
     private static DontDestroyAudioSource audioSource;
     private static GameObject ErrorMessage;
     private static TextMeshProUGUI ErrorText;
@@ -15,11 +14,17 @@ public class Menu : MonoBehaviour
     public GameObject StartGameMenu;
     public GameObject CustomGameMenu;
 
+    [Header("Input fields")]
+    public GameObject WidthField;
+    public GameObject HeightField;
+    public GameObject MineCountField;
+
+    private int gridWidth;
+    private int gridHeight;
+    private int gridMineCount;
+
     private void Awake()
     {
-        dd = FindAnyObjectByType<DontDestroyGridData>();
-        if (dd == null)
-            dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroyGridData)).GetComponent<DontDestroyGridData>();
         audioSource = FindAnyObjectByType<DontDestroyAudioSource>();
         if (audioSource == null)
             audioSource = new GameObject("Don't Destroy: Audio Source", typeof(DontDestroyAudioSource)).GetComponent<DontDestroyAudioSource>();
@@ -33,6 +38,12 @@ public class Menu : MonoBehaviour
             ErrorText.color = Color.red;
             ErrorMessage.SetActive(false);
         }
+
+        // Set default values
+        gridWidth = PlayerPrefs.GetInt("width", 20);
+        gridHeight = PlayerPrefs.GetInt("height", 20);
+        gridMineCount = PlayerPrefs.GetInt("mineCount", 50);
+
         PlaceCamera();
     }
 
@@ -58,7 +69,13 @@ public class Menu : MonoBehaviour
     public void CloseSettingsMenu() => SettingsMenu.SetActive(false);
     public void OpenStartGameMenu() => OpenMenu(StartGameMenu);
     public void CloseStartGameMenu() => StartGameMenu.SetActive(false);
-    public void OpenCustomGameMenu() => OpenMenu(CustomGameMenu);
+    public void OpenCustomGameMenu()
+    {
+        WidthField.GetComponent<TMP_InputField>().text = gridWidth.ToString();
+        HeightField.GetComponent<TMP_InputField>().text = gridHeight.ToString();
+        MineCountField.GetComponent<TMP_InputField>().text = gridMineCount.ToString();
+        OpenMenu(CustomGameMenu);
+    }
     public void CloseCustomGameMenu() => CustomGameMenu.SetActive(false);
 
     // Start games
@@ -70,27 +87,32 @@ public class Menu : MonoBehaviour
     {
         // Make sure data is correct
         ErrorMessage.SetActive(true);
-        if (Grid.IsSizeTooSmall(dd.width, dd.height))
+        if (Grid.IsSizeTooSmall(gridWidth, gridHeight))
         {
             ErrorText.text = "The size is too small!\nBoth width and height must be more than 0\nand one of them must be more than 3.";
             return;
         }
-        if (Grid.IsMineCountIncorrect(dd.width, dd.height, dd.mineCount))
+        if (Grid.IsMineCountIncorrect(gridWidth, gridHeight, gridMineCount))
         {
             ErrorText.text = "Mine count is incorrect!\nMine count should be more than 1 or less than the width times the height minus 9.";
             return;
         }
         ErrorMessage.SetActive(false);
+        
+        // Save data
+        PlayerPrefs.SetInt("width", gridWidth);
+        PlayerPrefs.SetInt("height", gridHeight);
+        PlayerPrefs.SetInt("mineCount", gridMineCount);
         SceneManager.LoadScene(1);
     }
 
     public void StartGame(int width, int height, int mineCount)
     {
-        // Give data to DontDestroy
-        dd.width = width;
-        dd.height = height;
-        dd.mineCount = mineCount;
-
+        // Save data
+        gridWidth = width;
+        gridHeight = height;
+        gridMineCount = mineCount;
+        
         StartGame();
     }
 
@@ -100,8 +122,8 @@ public class Menu : MonoBehaviour
 
     // Parse fields
 
-    public void ParseWidthField(string value) => int.TryParse(value, out dd.width);
-    public void ParseHeightField(string value) => int.TryParse(value, out dd.height);
-    public void ParseMineCountField(string value) => int.TryParse(value, out dd.mineCount);
+    public void ParseWidthField(string value) => int.TryParse(value, out gridWidth);
+    public void ParseHeightField(string value) => int.TryParse(value, out gridHeight);
+    public void ParseMineCountField(string value) => int.TryParse(value, out gridMineCount);
 
 }

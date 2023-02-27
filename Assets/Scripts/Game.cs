@@ -12,7 +12,6 @@ public class Game : MonoBehaviour
     private bool dragging = false;
     Vector2 mouseMovement = Vector2.zero;
 
-    private DontDestroyGridData dd;
     private DontDestroyAudioSource audioSource;
     private Grid grid = null;
 
@@ -22,10 +21,6 @@ public class Game : MonoBehaviour
 
     void Start()
     {
-        // Get data from DontDestroy
-        dd = FindAnyObjectByType<DontDestroyGridData>();
-        if (dd == null)
-            dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroyGridData)).GetComponent<DontDestroyGridData>();
         audioSource = FindAnyObjectByType<DontDestroyAudioSource>();
         if (audioSource == null)
             audioSource = new GameObject("Don't Destroy: Audio Source", typeof(DontDestroyAudioSource)).GetComponent<DontDestroyAudioSource>();
@@ -50,7 +45,7 @@ public class Game : MonoBehaviour
             grid.Destroy();
         }
         audioSource.PlayAudioStartGame();
-        grid = new Grid(dd.width, dd.height, dd.mineCount);
+        grid = new Grid(PlayerPrefs.GetInt("width"), PlayerPrefs.GetInt("height"), PlayerPrefs.GetInt("mineCount"));
         timer = 0;
     }
 
