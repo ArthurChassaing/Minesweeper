@@ -6,6 +6,12 @@ public class Menu : MonoBehaviour
     private static DontDestroyGridData dd;
     private static DontDestroyAudioSource audioSource;
 
+    [Header("Menus")]
+    public GameObject MainMenu;
+    public GameObject SettingsMenu;
+    public GameObject StartGameMenu;
+    public GameObject CustomGameMenu;
+
     private void Awake()
     {
         dd = FindAnyObjectByType<DontDestroyGridData>();
@@ -27,6 +33,21 @@ public class Menu : MonoBehaviour
     /// </summary>
     public void QuitGame() => Application.Quit();
 
+    private void OpenMenu(GameObject menu)
+    {
+        menu.SetActive(true);
+        audioSource.PlayClick1();
+    }
+
+    public void OpenMainMenu() => OpenMenu(MainMenu);
+    public void CloseMainMenu() => MainMenu.SetActive(false);
+    public void OpenSettingsMenu() => OpenMenu(SettingsMenu);
+    public void CloseSettingsMenu() => SettingsMenu.SetActive(false);
+    public void OpenStartGameMenu() => OpenMenu(StartGameMenu);
+    public void CloseStartGameMenu() => StartGameMenu.SetActive(false);
+    public void OpenCustomGameMenu() => OpenMenu(CustomGameMenu);
+    public void CloseCustomGameMenu() => CustomGameMenu.SetActive(false);
+    
     // Start games
 
     /// <summary>
@@ -44,14 +65,11 @@ public class Menu : MonoBehaviour
         dd.width = width;
         dd.height = height;
         dd.mineCount = mineCount;
-        audioSource.PlayClick1();
         StartGame();
     }
 
     public void StartBeginnerGame() => StartGame(9, 10, 10);
-
     public void StartIntermediateGame() => StartGame(16, 16, 40);
-
     public void StartExpertGame() => StartGame(29, 16, 99);
 
     // Parse fields

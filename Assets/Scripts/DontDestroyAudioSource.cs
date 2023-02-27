@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class DontDestroyAudioSource : MonoBehaviour
 {
-    [Header("Audio Source")]
-    public AudioSource audioSource;
+    private AudioSource audioSource;
 
     [Header("Audio Clips")]
     public AudioClip click1;
@@ -14,6 +13,11 @@ public class DontDestroyAudioSource : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        audioSource = gameObject.AddComponent<AudioSource>();
+        click1 = Resources.Load<AudioClip>("Audio/Click1");
+        click2 = Resources.Load<AudioClip>("Audio/Click2");
+        explosion = Resources.Load<AudioClip>("Audio/Explosion");
+        victory = Resources.Load<AudioClip>("Audio/Victory");
     }
 
     void Play(AudioClip clip)
