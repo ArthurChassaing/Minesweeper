@@ -3,13 +3,17 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    private static DontDestroy dd;
-   
+    private static DontDestroyGridData dd;
+    private static DontDestroyAudioSource audioSource;
+
     private void Awake()
     {
-        dd = FindAnyObjectByType<DontDestroy>();
+        dd = FindAnyObjectByType<DontDestroyGridData>();
         if (dd == null)
-            dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroy)).GetComponent<DontDestroy>();
+            dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroyGridData)).GetComponent<DontDestroyGridData>();
+        audioSource = FindAnyObjectByType<DontDestroyAudioSource>();
+        if (audioSource == null)
+            audioSource = new GameObject("Don't Destroy: Audio Source", typeof(DontDestroyAudioSource)).GetComponent<DontDestroyAudioSource>();
         PlaceCamera();
     }
 
@@ -40,6 +44,7 @@ public class Menu : MonoBehaviour
         dd.width = width;
         dd.height = height;
         dd.mineCount = mineCount;
+        audioSource.PlayClick1();
         StartGame();
     }
 

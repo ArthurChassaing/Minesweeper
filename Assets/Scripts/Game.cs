@@ -12,28 +12,26 @@ public class Game : MonoBehaviour
     private bool dragging = false;
     Vector2 mouseMovement = Vector2.zero;
 
-    private DontDestroy dd;
+    private DontDestroyGridData dd;
+    private DontDestroyAudioSource audioSource;
     private Grid grid = null;
 
     [Header("Component")]
     public TextMeshProUGUI TopLeftText;
     private float timer;
 
-    [Header("Audio")]
-    public AudioSource audioSource;
-    public AudioClip click;
-    public AudioClip explosion;
-    public AudioClip flag;
-    public AudioClip victory;
-
     void Start()
     {
         // Get data from DontDestroy
-        dd = FindAnyObjectByType<DontDestroy>();
+        dd = FindAnyObjectByType<DontDestroyGridData>();
         if (dd == null)
-            dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroy)).GetComponent<DontDestroy>();
+            dd = new GameObject("Don't Destroy: Grid Data", typeof(DontDestroyGridData)).GetComponent<DontDestroyGridData>();
         grid = new Grid(dd.width, dd.height, dd.mineCount);
         PlaceCamera();
+
+        audioSource = FindAnyObjectByType<DontDestroyAudioSource>();
+        if (audioSource == null)
+            audioSource = new GameObject("Don't Destroy: Audio Source", typeof(DontDestroyAudioSource)).GetComponent<DontDestroyAudioSource>();
     }
 
     void Update()
@@ -47,7 +45,11 @@ public class Game : MonoBehaviour
     /// </summary>
     public void InitGrid()
     {
-        if (grid != null) grid.Destroy();
+        if (grid != null)
+        {
+            grid.Destroy();
+            if (audioSource != null) audioSource.PlayExplosion();
+        }
         grid = new Grid(dd.width, dd.height, dd.mineCount);
         timer = 0;
     }
@@ -70,6 +72,7 @@ public class Game : MonoBehaviour
     {
         transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
         Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
+        if (audioSource != null) audioSource.PlayClick2();
     }
 
     /// <summary>
@@ -127,12 +130,11 @@ public class Game : MonoBehaviour
                     if (grid.IsEnded)
                     {
                         if (grid.IsVictorious)
-                            audioSource.clip = victory;
+                            audioSource.PlayVictory();
                         else
-                            audioSource.clip = explosion;
+                            audioSource.PlayExplosion();
                     }
-                    else audioSource.clip = click;
-                    audioSource.Play();
+                    else audioSource.PlayClick1();
                 }
             }
             mouse0Held = false;
@@ -148,8 +150,7 @@ public class Game : MonoBehaviour
                 Vector2Int clickPos = GetIntMouseCoordinates();
                 if (grid.ToggleFlagOnTile(clickPos))
                 {
-                    audioSource.clip = flag;
-                    audioSource.Play();
+                    audioSource.PlayClick2();
                 }
             }
             mouse1Held = false;

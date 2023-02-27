@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DontDestroy : MonoBehaviour
+public class DontDestroyGridData : MonoBehaviour
 {
     public int width = 20;
     public int height = 20;
