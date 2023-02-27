@@ -266,6 +266,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Center Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 9049414836403934923, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
+      propertyPath: m_text
+      value: Reset Camera
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
 --- !u!1001 &235278620
@@ -416,6 +420,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3706533977468732409, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
+      propertyPath: m_text
+      value: Restart
+      objectReference: {fileID: 0}
+    - target: {fileID: 9049414836403934923, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
       propertyPath: m_text
       value: Restart
       objectReference: {fileID: 0}
