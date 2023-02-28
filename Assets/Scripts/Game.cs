@@ -59,6 +59,7 @@ public class Game : MonoBehaviour
         GameText.verticalAlignment = VerticalAlignmentOptions.Top;
         GameText.horizontalAlignment = HorizontalAlignmentOptions.Left;
         GameText.fontSize = 36;
+        GameText.fontStyle = FontStyles.Normal;
         audioSource.PlayAudioStartGame();
     }
 
@@ -191,11 +192,12 @@ public class Game : MonoBehaviour
         GameText.verticalAlignment = VerticalAlignmentOptions.Middle;
         GameText.horizontalAlignment = HorizontalAlignmentOptions.Center;
         GameText.fontSize = 50;
+        GameText.fontStyle = FontStyles.Bold;
         if (grid.IsVictorious)
         {
             GameText.color = Color.green;
             GameText.text = "You win!\n";
-            if (timer < bestTime)
+            if (timer < bestTime || bestTime == -1)
             {
                 GameText.text += "New best time !";
                 SaveScore();

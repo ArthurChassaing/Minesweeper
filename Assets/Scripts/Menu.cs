@@ -78,6 +78,14 @@ public class Menu : MonoBehaviour
     }
     public void CloseCustomGameMenu() => CustomGameMenu.SetActive(false);
 
+    // Settings
+
+    public void ResetBestTimes()
+    {
+        PlayerPrefs.DeleteAll();
+        audioSource.PlayClick1();
+    }
+
     // Start games
 
     /// <summary>
