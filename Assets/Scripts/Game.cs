@@ -4,13 +4,7 @@ using TMPro;
 
 public class Game : MonoBehaviour
 {
-    const int tileSpriteSize = 16;
-    static readonly float moveDeadZone = 0.2f;
-
-    private bool mouse0Held = false;
-    private bool mouse1Held = false;
     private bool dragging = false;
-    Vector2 mouseMovement = Vector2.zero;
 
     private DontDestroyAudioSource audioSource;
     private Grid grid = null;
@@ -77,12 +71,12 @@ public class Game : MonoBehaviour
 
 
     /// <summary>
-    /// Center the camera on the grid and zoom perfectly to fit it in the screen.
+    /// Center the camera on the grid and zoom to show a maximum of 20 cells in height.
     /// </summary>
     public void PlaceCamera()
     {
         transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
-        Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
+        Camera.main.orthographicSize = Mathf.Min(Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2, 10);
     }
 
     /// <summary>
@@ -132,56 +126,42 @@ public class Game : MonoBehaviour
             Camera.main.orthographicSize = Mathf.Max(Camera.main.orthographicSize - Input.mouseScrollDelta.y, 1 + Camera.main.orthographicSize % 1);
         }
 
-        // Mouse inputs
-        if (Input.GetKeyDown(KeyCode.Mouse0)) mouse0Held = true;
-        if (Input.GetKeyDown(KeyCode.Mouse1)) mouse1Held = true;
 
-        // Mouse hold any click
-        if (mouse0Held || mouse1Held)
+        // Hold middle mouse button -> Move camera
+        if (Input.GetKeyDown(KeyCode.Mouse2)) dragging = true;
+        if (Input.GetKeyUp(KeyCode.Mouse2)) dragging = false;
+        if (dragging)
         {
-            mouseMovement += new Vector2(-Input.GetAxis("Mouse X"), -Input.GetAxis("Mouse Y"));
-            if (Mathf.Abs(mouseMovement.x) > moveDeadZone || Mathf.Abs(mouseMovement.y) > moveDeadZone)
-            {
-                dragging = true;
-                Camera.main.transform.Translate(Time.deltaTime * tileSpriteSize * (Camera.main.orthographicSize / 2) * mouseMovement);
-                mouseMovement = Vector2.zero;
-            }
+            Camera.main.transform.Translate(
+                Time.deltaTime * 64 * (Camera.main.orthographicSize / 2) *
+                new Vector2(
+                    -Input.GetAxis("Mouse X"),
+                    -Input.GetAxis("Mouse Y")
+            ));
         }
 
-        // Left click
+        // Left click -> Reveal tile
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            if (!dragging)
+            Vector2Int clickPos = GetIntMouseCoordinates();
+            if (grid.RevealTile(clickPos))
             {
-                Vector2Int clickPos = GetIntMouseCoordinates();
-                if (grid.RevealTile(clickPos))
+                if (grid.IsEnded)
                 {
-                    if (grid.IsEnded)
-                    {
-                        EndGame();
-                    }
-                    else audioSource.PlayClick1();
+                    EndGame();
                 }
+                else audioSource.PlayClick1();
             }
-            mouse0Held = false;
-            mouseMovement = Vector2.zero;
-            dragging = false;
         }
 
-        // Right click
+        // Right click -> Toggle flag
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
-            if (!dragging)
+            Vector2Int clickPos = GetIntMouseCoordinates();
+            if (grid.ToggleFlagOnTile(clickPos))
             {
-                Vector2Int clickPos = GetIntMouseCoordinates();
-                if (grid.ToggleFlagOnTile(clickPos))
-                {
-                    audioSource.PlayClick2();
-                }
+                audioSource.PlayClick2();
             }
-            mouse1Held = false;
-            mouseMovement = Vector2.zero;
-            dragging = false;
         }
     }
 
@@ -214,7 +194,8 @@ public class Game : MonoBehaviour
         else
         {
             GameText.color = Color.red;
-            GameText.text = "You lose !\nFlagged mines: " + grid.FlagCount + "/" + grid.MineCount; 
+            GameText.text = "You lose !\nFlagged mines: " + grid.FlagCount + "/" + grid.MineCount;
+            audioSource.PlayExplosion();
         }
         GameText.text += "\nTime: " + stringFromTime(timer, true);
     }
