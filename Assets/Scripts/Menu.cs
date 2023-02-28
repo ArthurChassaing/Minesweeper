@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -110,7 +109,7 @@ public class Menu : MonoBehaviour
         ErrorMessage.SetActive(true);
         if (Grid.IsSizeTooSmall(gridWidth, gridHeight))
         {
-            ErrorText.text = "The size is too small!\nBoth width and height must be more than 0\nand one of them must be more than 3.";
+            ErrorText.text = "The size is too small!\nBoth width and height must be more than or equal to 3.";
             return;
         }
         if (Grid.IsMineCountIncorrect(gridWidth, gridHeight, gridMineCount))

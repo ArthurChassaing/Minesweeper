@@ -56,6 +56,7 @@ public class Game : MonoBehaviour
         bestTime = PlayerPrefs.GetFloat(key, -1);
         stringBestTime = bestTime == -1 ? "Not set" : stringFromTime(bestTime);
         timer = 0;
+        GameText.color = Color.white;
         GameText.verticalAlignment = VerticalAlignmentOptions.Top;
         GameText.horizontalAlignment = HorizontalAlignmentOptions.Left;
         GameText.fontSize = 36;
@@ -121,7 +122,7 @@ public class Game : MonoBehaviour
         // Escape -> Return to menu
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SceneManager.LoadScene(0);
+            GetBackToMenu();
             return;
         }
 
@@ -182,6 +183,12 @@ public class Game : MonoBehaviour
             mouseMovement = Vector2.zero;
             dragging = false;
         }
+    }
+
+    public void GetBackToMenu()
+    {
+        grid.Destroy();
+        SceneManager.LoadScene(0);
     }
 
     /// <summary>
