@@ -4,6 +4,7 @@ using TMPro;
 
 public class Game : MonoBehaviour
 {
+    private float cameraSensibility;
     private bool dragging = false;
 
     private DontDestroyAudioSource audioSource;
@@ -20,6 +21,8 @@ public class Game : MonoBehaviour
         audioSource = FindAnyObjectByType<DontDestroyAudioSource>();
         if (audioSource == null)
             audioSource = new GameObject("Don't Destroy: Audio Source", typeof(DontDestroyAudioSource)).GetComponent<DontDestroyAudioSource>();
+
+        cameraSensibility = PlayerPrefs.GetFloat("sensibility");
 
         InitGrid();
         PlaceCamera();
@@ -76,7 +79,7 @@ public class Game : MonoBehaviour
     public void PlaceCamera()
     {
         transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
-        Camera.main.orthographicSize = Mathf.Min(Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2, 10);
+        Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
     }
 
     /// <summary>
@@ -133,7 +136,7 @@ public class Game : MonoBehaviour
         if (dragging)
         {
             Camera.main.transform.Translate(
-                Time.deltaTime * 64 * (Camera.main.orthographicSize / 2) *
+                Time.deltaTime * Camera.main.orthographicSize * cameraSensibility *
                 new Vector2(
                     -Input.GetAxis("Mouse X"),
                     -Input.GetAxis("Mouse Y")

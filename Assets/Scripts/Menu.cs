@@ -23,6 +23,8 @@ public class Menu : MonoBehaviour
     [Header("Settings Menu")]
     public GameObject NumberVolume;
     public GameObject SliderVolume;
+    public GameObject NumberSensibility;
+    public GameObject SliderSensitivity;
 
     private int gridWidth;
     private int gridHeight;
@@ -47,7 +49,10 @@ public class Menu : MonoBehaviour
         // Settings
         float volume = PlayerPrefs.GetFloat("volume", 1f);
         ChangeVolume(volume);
-        SliderVolume.GetComponent<Slider>().value = volume; 
+        SliderVolume.GetComponent<Slider>().value = volume;
+        float sensibility = PlayerPrefs.GetFloat("sensibility", 16f);
+        SliderSensitivity.GetComponent<Slider>().value = sensibility;
+
 
         // Set default values
         gridWidth = PlayerPrefs.GetInt("width", 20);
@@ -93,8 +98,10 @@ public class Menu : MonoBehaviour
     public void ResetBestTimes()
     {
         float volume = PlayerPrefs.GetFloat("volume", 1f);
+        float sensibility = PlayerPrefs.GetFloat("sensibility", 16f);
         PlayerPrefs.DeleteAll();
         PlayerPrefs.SetFloat("volume", volume);
+        PlayerPrefs.SetFloat("sensibility", sensibility);
         audioSource.PlayClick1();
     }
 
@@ -150,6 +157,12 @@ public class Menu : MonoBehaviour
     {
         NumberVolume.GetComponent<TextMeshProUGUI>().text = (value * 100).ToString("0");
         audioSource.ChangeVolume(value);
+    }
+
+    public void ChangeSensibility(float value) 
+    {
+        NumberSensibility.GetComponent<TextMeshProUGUI>().text = value.ToString("0.00");
+        PlayerPrefs.SetFloat("sensibility", value);
     }
 
 }
