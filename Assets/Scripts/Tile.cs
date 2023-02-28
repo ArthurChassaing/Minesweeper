@@ -1,24 +1,17 @@
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class Tile
 {
-    public static Dictionary<int, Color> NumColors { get; } = new()
-    {
-        { 0, new Color(0, 0, 0, 0) }, // 0 is transparent
-        { 1, new Color(0, 0, 1, 1) },
-        { 2, new Color(0, 0.5f, 0, 1) },
-        { 3, new Color(0.9f, 0.1f, 0.1f, 1) },
-        { 4, new Color(0, 0, 0.5f, 1) },
-        { 5, new Color(0.5f, 0, 0, 1) },
-        { 6, new Color(0, 0.5f, 0.5f, 1) },
-        { 7, new Color(0.5f, 0, 0.5f, 1) },
-        { 8, new Color(0.5f, 0.5f, 0.5f, 1) },
-    };
-
     public static GameObject SquarePrefab { get; } = Resources.Load<GameObject>("Prefabs/Square");
     public static Sprite BlankSprite { get; } = Resources.Load<Sprite>("Textures/BlankSquare");
+    public static Sprite OneSprite { get; } = Resources.Load<Sprite>("Textures/OneSquare");
+    public static Sprite TwoSprite { get; } = Resources.Load<Sprite>("Textures/TwoSquare");
+    public static Sprite ThreeSprite { get; } = Resources.Load<Sprite>("Textures/ThreeSquare");
+    public static Sprite FourSprite { get; } = Resources.Load<Sprite>("Textures/FourSquare");
+    public static Sprite FiveSprite { get; } = Resources.Load<Sprite>("Textures/FiveSquare");
+    public static Sprite SixSprite { get; } = Resources.Load<Sprite>("Textures/SixSquare");
+    public static Sprite SevenSprite { get; } = Resources.Load<Sprite>("Textures/SevenSquare");
+    public static Sprite EightSprite { get; } = Resources.Load<Sprite>("Textures/EightSquare");
     public static Sprite FlagSprite { get; } = Resources.Load<Sprite>("Textures/FlagSquare");
     public static Sprite MineSprite { get; } = Resources.Load<Sprite>("Textures/MineSquare");
     public static Sprite MineClickedSprite { get; } = Resources.Load<Sprite>("Textures/MineClickedSquare");
@@ -91,8 +84,18 @@ public class Tile
     /// <param name="num"></param>
     public void SetNumber(int num)
     {
-        gameObject.GetComponentInChildren<TextMeshPro>().text = num.ToString();
-        gameObject.GetComponentInChildren<TextMeshPro>().color = Tile.NumColors[num];
+        gameObject.GetComponent<SpriteRenderer>().sprite = num switch
+        {
+            1 => OneSprite,
+            2 => TwoSprite,
+            3 => ThreeSprite,
+            4 => FourSprite,
+            5 => FiveSprite,
+            6 => SixSprite,
+            7 => SevenSprite,
+            8 => EightSprite,
+            _ => BlankSprite,
+        };
     }
 
     /// <summary>
