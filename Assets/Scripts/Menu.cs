@@ -1,6 +1,8 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
@@ -18,6 +20,10 @@ public class Menu : MonoBehaviour
     public GameObject WidthField;
     public GameObject HeightField;
     public GameObject MineCountField;
+
+    [Header("Settings Menu")]
+    public GameObject NumberVolume;
+    public GameObject SliderVolume;
 
     private int gridWidth;
     private int gridHeight;
@@ -38,6 +44,11 @@ public class Menu : MonoBehaviour
             ErrorText.color = Color.red;
             ErrorMessage.SetActive(false);
         }
+
+        // Settings
+        float volume = PlayerPrefs.GetFloat("volume", 1f);
+        ChangeVolume(volume);
+        SliderVolume.GetComponent<Slider>().value = volume; 
 
         // Set default values
         gridWidth = PlayerPrefs.GetInt("width", 20);
@@ -82,7 +93,9 @@ public class Menu : MonoBehaviour
 
     public void ResetBestTimes()
     {
+        float volume = PlayerPrefs.GetFloat("volume", 1f);
         PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetFloat("volume", volume);
         audioSource.PlayClick1();
     }
 
@@ -133,5 +146,11 @@ public class Menu : MonoBehaviour
     public void ParseWidthField(string value) => int.TryParse(value, out gridWidth);
     public void ParseHeightField(string value) => int.TryParse(value, out gridHeight);
     public void ParseMineCountField(string value) => int.TryParse(value, out gridMineCount);
+
+    public void ChangeVolume(float value)
+    {
+        NumberVolume.GetComponent<TextMeshProUGUI>().text = (value * 100).ToString("0");
+        audioSource.ChangeVolume(value);
+    }
 
 }

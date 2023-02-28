@@ -30,4 +30,9 @@ public class DontDestroyAudioSource : MonoBehaviour
     public void PlayClick2() => Play(click2);
     public void PlayExplosion() => Play(explosion);
     public void PlayAudioStartGame() => Play(audioStartGame);
+    public void ChangeVolume(float value)
+    {
+        audioSource.volume= value;
+        PlayerPrefs.SetFloat("volume", value);
+    }
 }
