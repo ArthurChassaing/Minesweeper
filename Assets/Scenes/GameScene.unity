@@ -531,7 +531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a608ab35052214fa2b600645f2aaeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TopLeftText: {fileID: 1010633223}
+  GameText: {fileID: 1010633223}
 --- !u!1 &1010633221
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,7 +544,7 @@ GameObject:
   - component: {fileID: 1010633224}
   - component: {fileID: 1010633223}
   m_Layer: 5
-  m_Name: TopLeftText
+  m_Name: GameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -590,7 +590,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TopLeftText
+  m_text: GameText
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

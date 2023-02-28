@@ -207,7 +207,11 @@ public class Grid
                 if (IsVictorious) t.SetSprite(Tile.FlagSprite);
                 else if (!t.IsRevealed) t.SetSprite(Tile.MineSprite);
             }
-            else if (t.IsFlagged) t.SetSprite(Tile.MineCrossedSprite);
+            else if (t.IsFlagged)
+            {
+                t.SetSprite(Tile.MineCrossedSprite);
+                FlagCount--;
+            }
         }
         IsEnded = true;
     }

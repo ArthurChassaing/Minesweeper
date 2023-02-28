@@ -16,7 +16,9 @@ public class Game : MonoBehaviour
     private Grid grid = null;
 
     [Header("Component")]
-    public TextMeshProUGUI TopLeftText;
+    public TextMeshProUGUI GameText;
+    private float bestTime;
+    private string stringBestTime;
     private float timer;
 
     void Start()
@@ -32,11 +34,12 @@ public class Game : MonoBehaviour
     void Update()
     {
         HandleInputs();
-        UiUpdate();
+        if (!grid.IsEnded) UiUpdate();
     }
 
     /// <summary>
     /// Init the grid. Destroy previous grid if it exists.
+    /// Reset Ui of the game.
     /// </summary>
     public void InitGrid()
     {
@@ -44,9 +47,19 @@ public class Game : MonoBehaviour
         {
             grid.Destroy();
         }
-        audioSource.PlayAudioStartGame();
-        grid = new Grid(PlayerPrefs.GetInt("width"), PlayerPrefs.GetInt("height"), PlayerPrefs.GetInt("mineCount"));
+        int width = PlayerPrefs.GetInt("width");
+        int height = PlayerPrefs.GetInt("height");
+        int mineCount = PlayerPrefs.GetInt("mineCount");
+        grid = new Grid(width, height, mineCount);
+
+        string key = width + "x" + height + "/" + mineCount;
+        bestTime = PlayerPrefs.GetFloat(key, -1);
+        stringBestTime = bestTime == -1 ? "Not set" : stringFromTime(bestTime);
         timer = 0;
+        GameText.verticalAlignment = VerticalAlignmentOptions.Top;
+        GameText.horizontalAlignment = HorizontalAlignmentOptions.Left;
+        GameText.fontSize = 36;
+        audioSource.PlayAudioStartGame();
     }
 
     /// <summary>
@@ -55,8 +68,9 @@ public class Game : MonoBehaviour
     public void UiUpdate()
     {
         if (grid.IsMinesPlaced && !grid.IsEnded) { timer += Time.deltaTime; }
-        TopLeftText.text = "Mines left: " + (grid.MineCount - grid.FlagCount).ToString() + '\n';
-        TopLeftText.text += "Time: " + timer.ToString("0");
+        GameText.text = "Mines left: " + (grid.MineCount - grid.FlagCount).ToString() + '\n';
+        GameText.text += "Best time: " + stringBestTime + '\n';
+        GameText.text += "Time: " + stringFromTime(timer, true);
     }
 
 
@@ -67,6 +81,25 @@ public class Game : MonoBehaviour
     {
         transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
         Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
+    }
+
+    /// <summary>
+    /// Transform a float corresponding to a duration in seconds into a string "[mintes]min [seconds]s"
+    /// </summary>
+    /// <param name="time"></param>
+    static private string stringFromTime(float time, bool round = false) => (time > 60 ? (int)(time / 60) + "min " : "") + (round ? (time % 60).ToString("0") : (time % 60).ToString("0.00")) + "s";
+
+    /// <summary>
+    /// Save the score if it's the best time.
+    /// </summary>
+    private void SaveScore()
+    {
+        string key = grid.Width + "x" + grid.Height + "/" + grid.MineCount;
+        float bestTime = PlayerPrefs.GetFloat(key, -1);
+        if (bestTime == -1 || timer < bestTime)
+        {
+            PlayerPrefs.SetFloat(key, timer);
+        }
     }
 
     /// <summary>
@@ -123,10 +156,7 @@ public class Game : MonoBehaviour
                 {
                     if (grid.IsEnded)
                     {
-                        if (grid.IsVictorious)
-                            audioSource.PlayAudioStartGame();
-                        else
-                            audioSource.PlayExplosion();
+                        EndGame();
                     }
                     else audioSource.PlayClick1();
                 }
@@ -151,5 +181,32 @@ public class Game : MonoBehaviour
             mouseMovement = Vector2.zero;
             dragging = false;
         }
+    }
+
+    /// <summary>
+    /// Show the end game screen. Save the score if it's the best time.
+    /// </summary>
+    private void EndGame()
+    {
+        GameText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        GameText.horizontalAlignment = HorizontalAlignmentOptions.Center;
+        GameText.fontSize = 50;
+        if (grid.IsVictorious)
+        {
+            GameText.color = Color.green;
+            GameText.text = "You win!\n";
+            if (timer < bestTime)
+            {
+                GameText.text += "New best time !";
+                SaveScore();
+            }
+            else GameText.text += "Best time: " + stringBestTime;
+        }
+        else
+        {
+            GameText.color = Color.red;
+            GameText.text = "You lose !\nFlagged mines: " + grid.FlagCount + "/" + grid.MineCount; 
+        }
+        GameText.text += "\nTime: " + stringFromTime(timer, true);
     }
 }
