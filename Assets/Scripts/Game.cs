@@ -5,7 +5,7 @@ using TMPro;
 public class Game : MonoBehaviour
 {
     const int tileSpriteSize = 16;
-    static readonly float moveDeadZone = 0.1f;
+    static readonly float moveDeadZone = 0.2f;
 
     private bool mouse0Held = false;
     private bool mouse1Held = false;
@@ -142,7 +142,7 @@ public class Game : MonoBehaviour
             if (Mathf.Abs(mouseMovement.x) > moveDeadZone || Mathf.Abs(mouseMovement.y) > moveDeadZone)
             {
                 dragging = true;
-                Camera.main.transform.Translate(mouseMovement * Time.deltaTime * tileSpriteSize * Camera.main.orthographicSize);
+                Camera.main.transform.Translate(Time.deltaTime * tileSpriteSize * (Camera.main.orthographicSize / 2) * mouseMovement);
                 mouseMovement = Vector2.zero;
             }
         }

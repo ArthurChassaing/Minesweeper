@@ -7,14 +7,14 @@ public class Tile
     public static Dictionary<int, Color> NumColors { get; } = new()
     {
         { 0, new Color(0, 0, 0, 0) }, // 0 is transparent
-        { 1, new Color(0, 0, 250, 255) },
-        { 2, new Color(0, 125, 0, 255) },
-        { 3, new Color(240, 20, 20, 255) },
-        { 4, new Color(0, 0, 125, 255) },
-        { 5, new Color(120, 0, 0, 255) },
-        { 6, new Color(0, 130, 130, 255) },
-        { 7, new Color(132, 0, 132, 255) },
-        { 8, new Color(123, 123, 123, 255) },
+        { 1, new Color(0, 0, 1, 1) },
+        { 2, new Color(0, 0.5f, 0, 1) },
+        { 3, new Color(0.9f, 0.1f, 0.1f, 1) },
+        { 4, new Color(0, 0, 0.5f, 1) },
+        { 5, new Color(0.5f, 0, 0, 1) },
+        { 6, new Color(0, 0.5f, 0.5f, 1) },
+        { 7, new Color(0.5f, 0, 0.5f, 1) },
+        { 8, new Color(0.5f, 0.5f, 0.5f, 1) },
     };
 
     public static GameObject SquarePrefab { get; } = Resources.Load<GameObject>("Prefabs/Square");
