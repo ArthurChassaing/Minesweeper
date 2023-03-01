@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class Game : MonoBehaviour
 {
@@ -11,10 +12,12 @@ public class Game : MonoBehaviour
     private Grid grid = null;
 
     [Header("Component")]
-    public TextMeshProUGUI GameText;
+    public TextMeshProUGUI InGameText;
+    public TextMeshProUGUI EndGameText;
     private float bestTime;
     private string stringBestTime;
     private float timer;
+
 
     void Start()
     {
@@ -40,6 +43,9 @@ public class Game : MonoBehaviour
     /// </summary>
     public void InitGrid()
     {
+        InGameText.enabled = true;
+        EndGameText.enabled = false;
+        
         if (grid != null)
         {
             grid.Destroy();
@@ -53,11 +59,6 @@ public class Game : MonoBehaviour
         bestTime = PlayerPrefs.GetFloat(key, -1);
         stringBestTime = bestTime == -1 ? "Not set" : stringFromTime(bestTime);
         timer = 0;
-        GameText.color = Color.white;
-        GameText.verticalAlignment = VerticalAlignmentOptions.Top;
-        GameText.horizontalAlignment = HorizontalAlignmentOptions.Left;
-        GameText.fontSize = 36;
-        GameText.fontStyle = FontStyles.Normal;
         audioSource.PlayAudioStartGame();
     }
 
@@ -67,9 +68,9 @@ public class Game : MonoBehaviour
     public void UiUpdate()
     {
         if (grid.IsMinesPlaced && !grid.IsEnded) { timer += Time.deltaTime; }
-        GameText.text = "Mines left: " + (grid.MineCount - grid.FlagCount).ToString() + '\n';
-        GameText.text += "Best time: " + stringBestTime + '\n';
-        GameText.text += "Time: " + stringFromTime(timer, true);
+        InGameText.text = "Mines left: " + (grid.MineCount - grid.FlagCount).ToString() + '\n';
+        InGameText.text += "Best time: " + stringBestTime + '\n';
+        InGameText.text += "Time: " + stringFromTime(timer, true);
     }
 
 
@@ -143,6 +144,9 @@ public class Game : MonoBehaviour
             ));
         }
 
+        // Check if mouse is on UI components
+        if (EventSystem.current.IsPointerOverGameObject()) return; 
+
         // Left click -> Reveal tile
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
@@ -182,27 +186,25 @@ public class Game : MonoBehaviour
     /// </summary>
     private void EndGame()
     {
-        GameText.verticalAlignment = VerticalAlignmentOptions.Middle;
-        GameText.horizontalAlignment = HorizontalAlignmentOptions.Center;
-        GameText.fontSize = 50;
-        GameText.fontStyle = FontStyles.Bold;
+        InGameText.enabled = false;
+        EndGameText.enabled = true;
         if (grid.IsVictorious)
         {
-            GameText.color = Color.green;
-            GameText.text = "You win!\n";
+            EndGameText.color = Color.green;
+            EndGameText.text = "You win!\n";
             if (timer < bestTime || bestTime == -1)
             {
-                GameText.text += "New best time !";
+                EndGameText.text += "New best time !";
                 SaveScore();
             }
-            else GameText.text += "Best time: " + stringBestTime;
+            else EndGameText.text += "Best time: " + stringBestTime;
         }
         else
         {
-            GameText.color = Color.red;
-            GameText.text = "You lose !\nFlagged mines: " + grid.FlagCount + "/" + grid.MineCount;
+            EndGameText.color = Color.red;
+            EndGameText.text = "You lose !\nFlagged mines: " + grid.FlagCount + "/" + grid.MineCount;
             audioSource.PlayExplosion();
         }
-        GameText.text += "\nTime: " + stringFromTime(timer, true);
+        EndGameText.text += "\nTime: " + stringFromTime(timer, true);
     }
 }
