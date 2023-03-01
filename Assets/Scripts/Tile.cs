@@ -82,21 +82,18 @@ public class Tile
     /// Change the number displayed on the tile.
     /// </summary>
     /// <param name="num"></param>
-    public void SetNumber(int num)
+    public void SetNumber(int num) => gameObject.GetComponent<SpriteRenderer>().sprite = num switch
     {
-        gameObject.GetComponent<SpriteRenderer>().sprite = num switch
-        {
-            1 => OneSprite,
-            2 => TwoSprite,
-            3 => ThreeSprite,
-            4 => FourSprite,
-            5 => FiveSprite,
-            6 => SixSprite,
-            7 => SevenSprite,
-            8 => EightSprite,
-            _ => BlankSprite,
-        };
-    }
+        1 => OneSprite,
+        2 => TwoSprite,
+        3 => ThreeSprite,
+        4 => FourSprite,
+        5 => FiveSprite,
+        6 => SixSprite,
+        7 => SevenSprite,
+        8 => EightSprite,
+        _ => BlankSprite,
+    };
 
     /// <summary>
     /// Destroy the tile.

@@ -20,11 +20,21 @@ public class DontDestroyAudioSource : MonoBehaviour
         audioStartGame = Resources.Load<AudioClip>("Audio/Victory");
     }
 
+    /// <summary>
+    /// Play a sound effect.
+    /// </summary>
+    /// <param name="clip">Clip to play</param>
     void Play(AudioClip clip) => audioSource.PlayOneShot(clip);
+
     public void PlayClick1() => Play(click1);
     public void PlayClick2() => Play(click2);
     public void PlayExplosion() => Play(explosion);
     public void PlayAudioStartGame() => Play(audioStartGame);
+
+    /// <summary>
+    /// Change the volume of the audio source.
+    /// </summary>
+    /// <param name="value">New value (between 0 and 1)</param>
     public void ChangeVolume(float value)
     {
         audioSource.volume = value;

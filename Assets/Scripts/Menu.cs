@@ -32,9 +32,12 @@ public class Menu : MonoBehaviour
 
     private void Awake()
     {
+        // Audio
         audioSource = FindAnyObjectByType<DontDestroyAudioSource>();
         if (audioSource == null)
             audioSource = new GameObject("Don't Destroy: Audio Source", typeof(DontDestroyAudioSource)).GetComponent<DontDestroyAudioSource>();
+
+        // Error message (custom game)
         if (ErrorMessage == null)
         {
             ErrorMessage = Instantiate(Resources.Load<GameObject>("Prefabs/MenuText"));
@@ -72,6 +75,10 @@ public class Menu : MonoBehaviour
     /// </summary>
     public void QuitGame() => Application.Quit();
 
+    /// <summary>
+    /// Open a menu.
+    /// </summary>
+    /// <param name="menu"></param>
     private void OpenMenu(GameObject menu)
     {
         menu.SetActive(true);
@@ -92,18 +99,6 @@ public class Menu : MonoBehaviour
         OpenMenu(CustomGameMenu);
     }
     public void CloseCustomGameMenu() => CustomGameMenu.SetActive(false);
-
-    // Settings
-
-    public void ResetBestTimes()
-    {
-        float volume = PlayerPrefs.GetFloat("volume", 1f);
-        float sensibility = PlayerPrefs.GetFloat("sensibility", 16f);
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.SetFloat("volume", volume);
-        PlayerPrefs.SetFloat("sensibility", sensibility);
-        audioSource.PlayClick1();
-    }
 
     // Start games
 
@@ -133,6 +128,12 @@ public class Menu : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
+    /// <summary>
+    /// Start a game with custom data.
+    /// </summary>
+    /// <param name="width">Width of the grid</param>
+    /// <param name="height">Height of the grid</param>
+    /// <param name="mineCount">Number of mines</param>
     public void StartGame(int width, int height, int mineCount)
     {
         // Save data
@@ -153,16 +154,40 @@ public class Menu : MonoBehaviour
     public void ParseHeightField(string value) => int.TryParse(value, out gridHeight);
     public void ParseMineCountField(string value) => int.TryParse(value, out gridMineCount);
 
+    // Settings
+
+    /// <summary>
+    /// Reset all best times.
+    /// </summary>
+    public void ResetBestTimes()
+    {
+        float volume = PlayerPrefs.GetFloat("volume", 1f);
+        float sensibility = PlayerPrefs.GetFloat("sensibility", 16f);
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetFloat("volume", volume);
+        PlayerPrefs.SetFloat("sensibility", sensibility);
+        audioSource.PlayClick1();
+    }
+
+    /// <summary>
+    /// Change the volume of the audio source.
+    /// Update the volume text in the settings menu.
+    /// </summary>
+    /// <param name="value"></param>
     public void ChangeVolume(float value)
     {
         NumberVolume.GetComponent<TextMeshProUGUI>().text = (value * 100).ToString("0");
         audioSource.ChangeVolume(value);
     }
 
+    /// <summary>
+    /// Change the sensibility of the camera.
+    /// Update the sensibility text in the settings menu.
+    /// </summary>
+    /// <param name="value"></param>
     public void ChangeSensibility(float value) 
     {
         NumberSensibility.GetComponent<TextMeshProUGUI>().text = value.ToString("0.00");
         PlayerPrefs.SetFloat("sensibility", value);
     }
-
 }

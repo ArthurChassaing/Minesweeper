@@ -168,6 +168,9 @@ public class Game : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Destroy the grid and return to the menu scene.
+    /// </summary>
     public void GetBackToMenu()
     {
         grid.Destroy();

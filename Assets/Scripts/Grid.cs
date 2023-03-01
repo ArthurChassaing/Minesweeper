@@ -76,6 +76,11 @@ public class Grid
         IsMinesPlaced = true;
     }
 
+    /// <summary>
+    /// Check if the given position correspond to a tile in the grid.
+    /// </summary>
+    /// <param name="tilePosition"></param>
+    /// <returns>True if the tile is in the grid, false otherwise</returns>
     public bool IsTileInGrid(Vector2Int tilePosition) => 0 <= tilePosition.x && tilePosition.x < Width && 0 <= tilePosition.y && tilePosition.y < Height;
 
     /// <summary>
