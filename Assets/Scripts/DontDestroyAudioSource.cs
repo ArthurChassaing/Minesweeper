@@ -20,19 +20,14 @@ public class DontDestroyAudioSource : MonoBehaviour
         audioStartGame = Resources.Load<AudioClip>("Audio/Victory");
     }
 
-    void Play(AudioClip clip)
-    {
-        audioSource.clip = clip;
-        audioSource.Play();
-    }
-
+    void Play(AudioClip clip) => audioSource.PlayOneShot(clip);
     public void PlayClick1() => Play(click1);
     public void PlayClick2() => Play(click2);
     public void PlayExplosion() => Play(explosion);
     public void PlayAudioStartGame() => Play(audioStartGame);
     public void ChangeVolume(float value)
     {
-        audioSource.volume= value;
+        audioSource.volume = value;
         PlayerPrefs.SetFloat("volume", value);
     }
 }
