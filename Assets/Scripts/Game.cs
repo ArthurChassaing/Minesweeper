@@ -18,6 +18,8 @@ public class Game : MonoBehaviour
     private string stringBestTime;
     private float timer;
 
+    private float fpsTimer = 0;
+    private float fps = 0;
 
     void Start()
     {
@@ -68,9 +70,9 @@ public class Game : MonoBehaviour
     public void UiUpdate()
     {
         if (grid.IsMinesPlaced && !grid.IsEnded) { timer += Time.deltaTime; }
-        InGameText.text = "Mines left: " + (grid.MineCount - grid.FlagCount).ToString() + '\n';
-        InGameText.text += "Best time: " + stringBestTime + '\n';
-        InGameText.text += "Time: " + stringFromTime(timer, true);
+        InGameText.text = "Mines left: " + (grid.MineCount - grid.FlagCount).ToString();
+        InGameText.text += "\nBest time: " + stringBestTime;
+        InGameText.text += "\nTime: " + stringFromTime(timer, true);
     }
 
 

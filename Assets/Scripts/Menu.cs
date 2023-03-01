@@ -25,6 +25,7 @@ public class Menu : MonoBehaviour
     public GameObject SliderVolume;
     public GameObject NumberSensibility;
     public GameObject SliderSensitivity;
+    public GameObject FullscreenToggle;
 
     private int gridWidth;
     private int gridHeight;
@@ -51,11 +52,11 @@ public class Menu : MonoBehaviour
 
         // Settings
         float volume = PlayerPrefs.GetFloat("volume", 1f);
-        ChangeVolume(volume);
         SliderVolume.GetComponent<Slider>().value = volume;
         float sensibility = PlayerPrefs.GetFloat("sensibility", 16f);
         SliderSensitivity.GetComponent<Slider>().value = sensibility;
-
+        int fullscreen = PlayerPrefs.GetInt("fullscreen", 1);
+        FullscreenToggle.GetComponent<Toggle>().isOn = fullscreen == 1;
 
         // Set default values
         gridWidth = PlayerPrefs.GetInt("width", 20);
@@ -163,9 +164,11 @@ public class Menu : MonoBehaviour
     {
         float volume = PlayerPrefs.GetFloat("volume", 1f);
         float sensibility = PlayerPrefs.GetFloat("sensibility", 16f);
+        int fullscreen = PlayerPrefs.GetInt("fullscreen", 1);
         PlayerPrefs.DeleteAll();
         PlayerPrefs.SetFloat("volume", volume);
         PlayerPrefs.SetFloat("sensibility", sensibility);
+        PlayerPrefs.SetInt("fullscreen", fullscreen);
         audioSource.PlayClick1();
     }
 
@@ -189,5 +192,14 @@ public class Menu : MonoBehaviour
     {
         NumberSensibility.GetComponent<TextMeshProUGUI>().text = value.ToString("0.00");
         PlayerPrefs.SetFloat("sensibility", value);
+    }
+
+    public void SetFullscreen(bool value)
+    {
+        if (value)
+            Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
+        else
+            Screen.SetResolution(Screen.currentResolution.width / 2, Screen.currentResolution.height / 2, false);
+        PlayerPrefs.SetInt("fullscreen", value ? 1 : 0);
     }
 }
