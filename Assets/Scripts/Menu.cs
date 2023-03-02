@@ -163,7 +163,7 @@ public class Menu : MonoBehaviour
         {
             0 => "Default Minesweeper:\nUse the hints to discover all safe tiles!",
             1 => "Spinning:\nDefault Minesweeper, but the grid is slowly rotating on itself!",
-            2 => "Running Bomb:\nDefault Minesweeper, but a random mine is a Running Bomb!\nThe Running Bomb move to an undiscovered tile among its neighbours each time a tile is revealed.\nBe careful: The Running Bomb does not warn the hints around itself when it moves!\nYou can click on the hints to update their value.",
+            2 => "Running Bomb:\nDefault Minesweeper, but a random mine is a Running Bomb!\nThe Running Bomb move at each revealing click.\nIt moves only to an undiscovered tile, and can't move to a tile that already contains a mine.",
             _ => "An error occured!"
         };
     }

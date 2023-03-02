@@ -16,7 +16,7 @@ public class Grid
     public bool IsMinesPlaced { get; private set; }
     public bool IsEnded { get; private set; }
     public bool IsVictorious { get; private set; }
-    private Tile RunningBomb { get; set; } // Game mode "Running Bomb"
+    public Tile RunningBomb { get; set; } // Game mode "Running Bomb"
 
     /// <summary>
     /// Create a grid with a size and a mine count.
@@ -127,7 +127,6 @@ public class Grid
                     clickOnRevealed = false;
                     continue;
                 }
-                else if (mineCount != currentTile.Number) currentTile.Reveal();
                 else return false;
             }
 
@@ -141,7 +140,7 @@ public class Grid
             // No mines around: Reveal neighbours
             if (mineCount == 0)
             {
-                tilesToReveal = tilesToReveal.Union(neighbours).ToList();
+                tilesToReveal = tilesToReveal.Union(neighbours.Where(n => !n.IsRevealed)).ToList();
             }
             // Else: There is mines around: Write the number of mines on the tile
             else
@@ -173,7 +172,7 @@ public class Grid
             {
                 neighbourPos.y = y;
                 if (!IsTileInGrid(neighbourPos)) continue;
-                if (!this[neighbourPos].IsRevealed) list.Add(this[neighbourPos]);
+                list.Add(this[neighbourPos]);
             }
         }
         return list;
@@ -218,7 +217,7 @@ public class Grid
             if (t.IsMine)
             {
                 if (IsVictorious) t.SetSprite(Tile.FlagSprite);
-                else if (!t.IsRevealed) t.SetSprite(Tile.MineSprite);
+                else if (!t.IsRevealed && !t.IsFlagged) t.SetSprite(Tile.MineSprite);
             }
             else if (t.IsFlagged)
             {
@@ -247,32 +246,36 @@ public class Grid
     /// </summary>
     public void MoveRunningBomb()
     {
-        if (RunningBomb == null) return;
-
         // Get the next possible positions
+        List<Tile> oldNeighbours = GetNeighbours(RunningBomb);
         List<Tile> nextPositions = new();
-        foreach (Tile n in GetNeighbours(RunningBomb))
+        foreach (Tile n in oldNeighbours)
         {
-            if (!n.IsRevealed) nextPositions.Add(n);
+            if (!n.IsRevealed && !n.IsMine) nextPositions.Add(n);
         }
 
         // If there is no next position, stop the bomb
         if (nextPositions.Count == 0)
         {
-            RunningBomb = null;
             return;
         }
 
         // Change the bomb position
-        Tile nextTile = nextPositions[UnityEngine.Random.Range(0, nextPositions.Count)];
-        if (!nextTile.IsMine)
-        {
-            RunningBomb.SetMine(false);
-            nextTile.SetMine(true);
-        }
-        RunningBomb = nextTile;
-    }
+        RunningBomb.SetMine(false);
+        RunningBomb = nextPositions[UnityEngine.Random.Range(0, nextPositions.Count)];
+        RunningBomb.SetMine(true);
 
+        // Update the neighbours numbers
+        foreach (Tile n in oldNeighbours)
+        {
+            if (n.IsRevealed) n.SetNumber(n.Number - 1);
+        }
+        foreach (Tile n in GetNeighbours(RunningBomb))
+        {
+            if (n.IsRevealed) n.SetNumber(n.Number + 1);
+
+        }
+    }
 
     // Statics:
 

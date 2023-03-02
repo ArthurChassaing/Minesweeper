@@ -17,7 +17,7 @@ public class Tile
     public static Sprite MineClickedSprite { get; } = Resources.Load<Sprite>("Textures/MineClickedSquare");
     public static Sprite MineCrossedSprite { get; } = Resources.Load<Sprite>("Textures/MineCrossedSquare");
     public static Sprite UnknownSprite { get; } = Resources.Load<Sprite>("Textures/UnknownSquare");
-    public const int SpriteSize = 32;
+    public static Sprite RunningBomb { get; } = Resources.Load<Sprite>("Textures/RunningBombSquare");
 
     public Vector2Int Position { get; }
     public bool IsMine { get; private set; }

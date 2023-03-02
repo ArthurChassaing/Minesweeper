@@ -218,6 +218,8 @@ public class Game : MonoBehaviour
     /// </summary>
     private void EndGame()
     {
+        if (gameMode == GameMode.RunningBomb) grid.RunningBomb.SetSprite(Tile.RunningBomb);
+
         InGameText.enabled = false;
         EndGameText.enabled = true;
         if (grid.IsVictorious)
@@ -234,7 +236,7 @@ public class Game : MonoBehaviour
         else
         {
             EndGameText.color = Color.red;
-            EndGameText.text = "You lose !\nFlagged mines: " + grid.FlagCount + "/" + grid.MineCount;
+            EndGameText.text = "You lose!\nFlagged mines: " + grid.FlagCount + "/" + grid.MineCount;
             audioSource.PlayExplosion();
         }
         EndGameText.text += "\nTime: " + stringFromTime(timer, true);
