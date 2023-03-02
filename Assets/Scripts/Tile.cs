@@ -23,6 +23,7 @@ public class Tile
     public bool IsMine { get; private set; }
     public bool IsFlagged { get; private set; }
     public bool IsRevealed { get; private set; }
+    public int Number { get; private set; }
     private GameObject gameObject;
 
     /// <summary>
@@ -42,9 +43,9 @@ public class Tile
     }
 
     /// <summary>
-    /// Place a bomb in the tile.
+    /// Place a mine in the tile.
     /// </summary>
-    public void SetBomb() => IsMine = true;
+    public void SetMine(bool b = true) => IsMine = b;
 
     /// <summary>
     /// Toggle flag placement on the tile. Change the tile's skin.
@@ -82,24 +83,28 @@ public class Tile
     /// Change the number displayed on the tile.
     /// </summary>
     /// <param name="num"></param>
-    public void SetNumber(int num) => gameObject.GetComponent<SpriteRenderer>().sprite = num switch
+    public void SetNumber(int num)
     {
-        1 => OneSprite,
-        2 => TwoSprite,
-        3 => ThreeSprite,
-        4 => FourSprite,
-        5 => FiveSprite,
-        6 => SixSprite,
-        7 => SevenSprite,
-        8 => EightSprite,
-        _ => BlankSprite,
-    };
-
-    /// <summary>
-    /// Destroy the tile.
-    /// </summary>
-    public void Destroy()
-    {
-        Object.Destroy(gameObject);
+        Number = num;
+        gameObject.GetComponent<SpriteRenderer>().sprite = num switch
+        {
+            1 => OneSprite,
+            2 => TwoSprite,
+            3 => ThreeSprite,
+            4 => FourSprite,
+            5 => FiveSprite,
+            6 => SixSprite,
+            7 => SevenSprite,
+            8 => EightSprite,
+            _ => BlankSprite,
+        };
     }
-}
+
+        /// <summary>
+        /// Destroy the tile.
+        /// </summary>
+        public void Destroy()
+        {
+            Object.Destroy(gameObject);
+        }
+    }

@@ -16,6 +16,7 @@ public class Grid
     public bool IsMinesPlaced { get; private set; }
     public bool IsEnded { get; private set; }
     public bool IsVictorious { get; private set; }
+    private Tile RunningBomb { get; set; } // Game mode "Running Bomb"
 
     /// <summary>
     /// Create a grid with a size and a mine count.
@@ -71,7 +72,8 @@ public class Grid
             do { rand = new Vector2Int(UnityEngine.Random.Range(0, Width), UnityEngine.Random.Range(0, Height)); }
             while (this[rand].IsMine || clickedAndNeighbours.Contains(this[rand]));
 
-            this[rand].SetBomb();
+            this[rand].SetMine();
+            if (RunningBomb == null) RunningBomb = this[rand];
         }
         IsMinesPlaced = true;
     }
@@ -230,6 +232,39 @@ public class Grid
         {
             t.Destroy();
         }
+    }
+
+    // Game mode specific methods:
+
+    /// <summary>
+    /// Move the RunningBomb to a random unrevealed tile next to it.
+    /// </summary>
+    public void MoveRunningBomb()
+    {
+        if (RunningBomb == null) return;
+
+        // Get the next possible positions
+        List<Tile> nextPositions = new();
+        foreach (Tile n in GetNeighbours(RunningBomb))
+        {
+            if (!n.IsRevealed) nextPositions.Add(n);
+        }
+
+        // If there is no next position, stop the bomb
+        if (nextPositions.Count == 0)
+        {
+            RunningBomb = null;
+            return;
+        }
+
+        // Change the bomb position
+        Tile nextTile = nextPositions[UnityEngine.Random.Range(0, nextPositions.Count)];
+        if (!nextTile.IsMine)
+        {
+            RunningBomb.SetMine(false);
+            nextTile.SetMine(true);
+        }
+        RunningBomb = nextTile;
     }
 
 

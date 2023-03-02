@@ -12,6 +12,7 @@ public class Game : MonoBehaviour
         RunningBomb = 2,
     }
     private GameMode gameMode;
+    private float RunningBombTimer;
 
     private float cameraSensibility;
     private bool dragging = false;
@@ -47,7 +48,15 @@ public class Game : MonoBehaviour
             case GameMode.Spinning:
                 RotateCamera();
                 break;
-            default:
+            case GameMode.RunningBomb:
+                RunningBombTimer += Time.deltaTime;
+                if (RunningBombTimer > 1)
+                {
+                    RunningBombTimer = 0;
+                    grid.MoveRunningBomb();
+                }
+                break;
+                default:
                 break;
         }
         if (!grid.IsEnded) UiUpdate();
@@ -64,7 +73,7 @@ public class Game : MonoBehaviour
 
         // Get the game mode
         gameMode = (GameMode)PlayerPrefs.GetInt("gameMode", 0);
-        
+
         // Destroy old grid
         if (grid != null)
         {
@@ -178,7 +187,7 @@ public class Game : MonoBehaviour
         }
 
         // Check if mouse is on UI components
-        if (EventSystem.current.IsPointerOverGameObject()) return; 
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
         // Left click -> Reveal tile
         if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -241,4 +250,3 @@ public class Game : MonoBehaviour
         EndGameText.text += "\nTime: " + stringFromTime(timer, true);
     }
 }
-    
