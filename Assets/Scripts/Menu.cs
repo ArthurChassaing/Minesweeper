@@ -179,7 +179,7 @@ public class Menu : MonoBehaviour
     /// <param name="value"></param>
     public void ChangeVolume(float value)
     {
-        NumberVolume.GetComponent<TextMeshProUGUI>().text = (value * 100).ToString("0");
+        NumberVolume.GetComponent<TextMeshProUGUI>().text = (value * 200).ToString("0");
         audioSource.ChangeVolume(value);
     }
 

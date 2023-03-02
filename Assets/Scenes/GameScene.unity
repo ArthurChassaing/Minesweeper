@@ -634,7 +634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9131141475454112567, guid: d95be52320b032146abaadaddbe2f02b, type: 3}
       propertyPath: m_text
-      value: GameText
+      value: End Text
       objectReference: {fileID: 0}
     - target: {fileID: 9131141475454112567, guid: d95be52320b032146abaadaddbe2f02b, type: 3}
       propertyPath: m_fontSize

@@ -18,9 +18,6 @@ public class Game : MonoBehaviour
     private string stringBestTime;
     private float timer;
 
-    private float fpsTimer = 0;
-    private float fps = 0;
-
     void Start()
     {
         audioSource = FindAnyObjectByType<DontDestroyAudioSource>();
@@ -83,6 +80,7 @@ public class Game : MonoBehaviour
     {
         transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
         Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
+        Camera.main.orthographicSize = Mathf.Max(Camera.main.orthographicSize + 1, Camera.main.orthographicSize * 1.1f);
     }
 
     /// <summary>
