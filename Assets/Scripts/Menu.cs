@@ -16,6 +16,9 @@ public class Menu : MonoBehaviour
     public GameObject GameModeDropdown;
     public GameObject CustomGameMenu;
 
+    [Header("Start Game Menu")]
+    public GameObject GameModeDescription;
+
     [Header("Input fields")]
     public GameObject WidthField;
     public GameObject HeightField;
@@ -153,11 +156,22 @@ public class Menu : MonoBehaviour
     public void StartIntermediateGame() => StartGame(16, 16, 40);
     public void StartExpertGame() => StartGame(29, 16, 99);
 
-    public void ChangeGameMode(int value) => PlayerPrefs.SetInt("gameMode", value);
+    public void ChangeGameMode(int value)
+    {
+        PlayerPrefs.SetInt("gameMode", value);
+        GameModeDescription.GetComponent<TextMeshProUGUI>().text = value switch
+        {
+            0 => "Default Minesweeper:\nUse the hints to discover all safe tiles!",
+            1 => "Spinning:\nDefault Minesweeper, but the grid is slowly rotating on itself!",
+            2 => "Running Bomb:\nDefault Minesweeper, but a random mine is a Running Bomb!\nThe Running Bomb move to an undiscovered tile among its neighbours each time a tile is revealed.\nBe careful: The Running Bomb does not warn the hints around itself when it moves!\nYou can click on the hints to update their value.",
+            _ => "An error occured!"
+        };
+    }
 
-    // Parse fields
 
-    public void ParseWidthField(string value) => int.TryParse(value, out gridWidth);
+        // Parse fields
+
+        public void ParseWidthField(string value) => int.TryParse(value, out gridWidth);
     public void ParseHeightField(string value) => int.TryParse(value, out gridHeight);
     public void ParseMineCountField(string value) => int.TryParse(value, out gridMineCount);
 
@@ -200,6 +214,10 @@ public class Menu : MonoBehaviour
         PlayerPrefs.SetFloat("sensibility", value);
     }
 
+    /// <summary>
+    /// Change the fullscreen mode.
+    /// </summary>
+    /// <param name="value"></param>
     public void SetFullscreen(bool value)
     {
         if (value)

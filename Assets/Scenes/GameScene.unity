@@ -1058,7 +1058,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9049414836403934923, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
       propertyPath: m_text
-      value: Quit [ESC]
+      value: Main Menu
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f7174e23e56cd6242a2accd4eec7f60e, type: 3}
