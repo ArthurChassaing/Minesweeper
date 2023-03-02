@@ -104,13 +104,7 @@ public class Grid
         int mineCount, flagCount;
         while (tilesToReveal.Count > 0)
         {
-            // Reveal the first tile in the list
             currentTile = tilesToReveal.First();
-            if (currentTile.Reveal())
-            {
-                SetEnded();
-                return true;
-            }
 
             // Check for mines and flags in it's neighbourhood
             neighbours = GetNeighbours(currentTile);
@@ -122,14 +116,26 @@ public class Grid
                 if (n.IsFlagged) flagCount++;
             }
 
-            if (clickOnRevealed && mineCount > 0 && mineCount == flagCount)
+            if (clickOnRevealed)
             {
-                foreach (Tile n in neighbours)
+                if (mineCount > 0 && mineCount == flagCount)
                 {
-                    if (!n.IsRevealed && !n.IsFlagged) tilesToReveal.Add(n);
+                    foreach (Tile n in neighbours)
+                    {
+                        if (!n.IsRevealed && !n.IsFlagged) tilesToReveal.Add(n);
+                    }
+                    clickOnRevealed = false;
+                    continue;
                 }
-                clickOnRevealed = false;
-                continue;
+                else if (mineCount != currentTile.Number) currentTile.Reveal();
+                else return false;
+            }
+
+            // Reveal the tile
+            else if (currentTile.Reveal())
+            {
+                SetEnded();
+                return true;
             }
 
             // No mines around: Reveal neighbours

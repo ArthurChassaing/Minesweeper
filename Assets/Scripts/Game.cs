@@ -12,7 +12,6 @@ public class Game : MonoBehaviour
         RunningBomb = 2,
     }
     private GameMode gameMode;
-    private float RunningBombTimer;
 
     private float cameraSensibility;
     private bool dragging = false;
@@ -43,22 +42,7 @@ public class Game : MonoBehaviour
     void Update()
     {
         HandleInputs();
-        switch (gameMode)
-        {
-            case GameMode.Spinning:
-                RotateCamera();
-                break;
-            case GameMode.RunningBomb:
-                RunningBombTimer += Time.deltaTime;
-                if (RunningBombTimer > 1)
-                {
-                    RunningBombTimer = 0;
-                    grid.MoveRunningBomb();
-                }
-                break;
-                default:
-                break;
-        }
+        if (gameMode == GameMode.Spinning) RotateCamera();
         if (!grid.IsEnded) UiUpdate();
     }
 
@@ -87,8 +71,7 @@ public class Game : MonoBehaviour
         grid = new Grid(width, height, mineCount);
 
         // Get best time on this configuration
-        string key = width + "x" + height + "/" + mineCount;
-        bestTime = PlayerPrefs.GetFloat(key, -1);
+        bestTime = PlayerPrefs.GetFloat(GetPlayerPrefsKey(), -1);
         stringBestTime = bestTime == -1 ? "Not set" : stringFromTime(bestTime);
         timer = 0;
 
@@ -132,11 +115,17 @@ public class Game : MonoBehaviour
     static private string stringFromTime(float time, bool round = false) => (time > 60 ? (int)(time / 60) + "min " : "") + (round ? (time % 60).ToString("0") : (time % 60).ToString("0.00")) + "s";
 
     /// <summary>
+    /// Get the key to access playerPrefs.
+    /// </summary>
+    /// <returns></returns>
+    public string GetPlayerPrefsKey() => gameMode + ">" + grid.Width + "x" + grid.Height + "/" + grid.MineCount;
+
+    /// <summary>
     /// Save the score if it's the best time.
     /// </summary>
     private void SaveScore()
     {
-        string key = grid.Width + "x" + grid.Height + "/" + grid.MineCount;
+        string key = GetPlayerPrefsKey();
         float bestTime = PlayerPrefs.GetFloat(key, -1);
         if (bestTime == -1 || timer < bestTime)
         {
@@ -200,6 +189,7 @@ public class Game : MonoBehaviour
                     EndGame();
                 }
                 else audioSource.PlayClick1();
+                if (gameMode == GameMode.RunningBomb) grid.MoveRunningBomb();
             }
         }
 
