@@ -13,6 +13,7 @@ public class Menu : MonoBehaviour
     public GameObject MainMenu;
     public GameObject SettingsMenu;
     public GameObject StartGameMenu;
+    public GameObject GameModeDropdown;
     public GameObject CustomGameMenu;
 
     [Header("Input fields")]
@@ -37,6 +38,9 @@ public class Menu : MonoBehaviour
         audioSource = FindAnyObjectByType<DontDestroyAudioSource>();
         if (audioSource == null)
             audioSource = new GameObject("Don't Destroy: Audio Source", typeof(DontDestroyAudioSource)).GetComponent<DontDestroyAudioSource>();
+
+        // Game mode dropdown
+        GameModeDropdown.GetComponent<TMP_Dropdown>().value = PlayerPrefs.GetInt("gameMode", 0);
 
         // Error message (custom game)
         if (ErrorMessage == null)
@@ -148,6 +152,8 @@ public class Menu : MonoBehaviour
     public void StartBeginnerGame() => StartGame(9, 10, 10);
     public void StartIntermediateGame() => StartGame(16, 16, 40);
     public void StartExpertGame() => StartGame(29, 16, 99);
+
+    public void ChangeGameMode(int value) => PlayerPrefs.SetInt("gameMode", value);
 
     // Parse fields
 

@@ -5,6 +5,14 @@ using UnityEngine.EventSystems;
 
 public class Game : MonoBehaviour
 {
+    enum GameMode
+    {
+        Default = 0,
+        Spinning = 1,
+        RunningBomb = 2,
+    }
+    private GameMode gameMode;
+
     private float cameraSensibility;
     private bool dragging = false;
 
@@ -12,6 +20,7 @@ public class Game : MonoBehaviour
     private Grid grid = null;
 
     [Header("Component")]
+    public GameObject CameraPivot;
     public TextMeshProUGUI InGameText;
     public TextMeshProUGUI EndGameText;
     private float bestTime;
@@ -33,6 +42,14 @@ public class Game : MonoBehaviour
     void Update()
     {
         HandleInputs();
+        switch (gameMode)
+        {
+            case GameMode.Spinning:
+                RotateCamera();
+                break;
+            default:
+                break;
+        }
         if (!grid.IsEnded) UiUpdate();
     }
 
@@ -44,20 +61,28 @@ public class Game : MonoBehaviour
     {
         InGameText.enabled = true;
         EndGameText.enabled = false;
+
+        // Get the game mode
+        gameMode = (GameMode)PlayerPrefs.GetInt("gameMode", 0);
         
+        // Destroy old grid
         if (grid != null)
         {
             grid.Destroy();
         }
+
+        // Create new grid
         int width = PlayerPrefs.GetInt("width");
         int height = PlayerPrefs.GetInt("height");
         int mineCount = PlayerPrefs.GetInt("mineCount");
         grid = new Grid(width, height, mineCount);
 
+        // Get best time on this configuration
         string key = width + "x" + height + "/" + mineCount;
         bestTime = PlayerPrefs.GetFloat(key, -1);
         stringBestTime = bestTime == -1 ? "Not set" : stringFromTime(bestTime);
         timer = 0;
+
         audioSource.PlayAudioStartGame();
     }
 
@@ -78,9 +103,17 @@ public class Game : MonoBehaviour
     /// </summary>
     public void PlaceCamera()
     {
-        transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
+        CameraPivot.transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
         Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
         Camera.main.orthographicSize = Mathf.Max(Camera.main.orthographicSize + 1, Camera.main.orthographicSize * 1.1f);
+    }
+
+    /// <summary>
+    /// Rotate the camera. Used in game mode "Spinning".
+    /// </summary>
+    private void RotateCamera()
+    {
+        CameraPivot.transform.eulerAngles += new Vector3(0, 0, Time.deltaTime);
     }
 
     /// <summary>
@@ -208,3 +241,4 @@ public class Game : MonoBehaviour
         EndGameText.text += "\nTime: " + stringFromTime(timer, true);
     }
 }
+    
