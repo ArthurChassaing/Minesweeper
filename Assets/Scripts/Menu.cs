@@ -51,7 +51,7 @@ public class Menu : MonoBehaviour
         }
 
         // Settings
-        float volume = PlayerPrefs.GetFloat("volume", 1f);
+        float volume = PlayerPrefs.GetFloat("volume", 0.5f);
         SliderVolume.GetComponent<Slider>().value = volume;
         float sensibility = PlayerPrefs.GetFloat("sensibility", 16f);
         SliderSensitivity.GetComponent<Slider>().value = sensibility;
