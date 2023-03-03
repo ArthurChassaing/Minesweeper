@@ -96,6 +96,7 @@ public class Game : MonoBehaviour
     public void PlaceCamera()
     {
         CameraPivot.transform.position = new Vector3(grid.Width * 0.5f - 0.5f, grid.Height * 0.5f - 0.5f, -10);
+        Camera.main.transform.position = CameraPivot.transform.position;
         Camera.main.orthographicSize = Mathf.Max(grid.Width / Camera.main.aspect, grid.Height) / 2;
         Camera.main.orthographicSize = Mathf.Max(Camera.main.orthographicSize + 1, Camera.main.orthographicSize * 1.1f);
     }
@@ -188,8 +189,11 @@ public class Game : MonoBehaviour
                 {
                     EndGame();
                 }
-                else audioSource.PlayClick1();
-                if (gameMode == GameMode.RunningBomb) grid.MoveRunningBomb();
+                else
+                {
+                    audioSource.PlayClick1();
+                    if (gameMode == GameMode.RunningBomb) grid.MoveRunningBomb();
+                }
             }
         }
 
@@ -228,7 +232,7 @@ public class Game : MonoBehaviour
             EndGameText.text = "You win!\n";
             if (timer < bestTime || bestTime == -1)
             {
-                EndGameText.text += "New best time !";
+                EndGameText.text += "New best time!";
                 SaveScore();
             }
             else EndGameText.text += "Best time: " + stringBestTime;
