@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is the first game [Arthur](https://github.com/ArthurChassaing) and I made in Unity. It is a simple Minesweeper game with a few extra game modes. The whole project took 2 weeks to complete.
+This project is the first game [Lucas](https://github.com/lvocanson) and I made in Unity. It is a simple Minesweeper game with a few extra game modes. The whole project took 2 weeks to complete.
 
 ## How to Play
 
